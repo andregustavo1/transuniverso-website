@@ -68,37 +68,45 @@ const JornadaCarga = () => {
 
     if (!section || !container || !cards) return;
 
-    // Calculate total scroll width based on device
-    const cardWidth = isMobile ? window.innerWidth * 0.85 : window.innerWidth;
-    const gap = isMobile ? 16 : 0; // gap between cards on mobile
-    const totalCards = journeyCards.length;
-    const scrollDistance = (cardWidth + gap) * (totalCards - 1); // Distance to scroll through all cards
-    const endBuffer = window.innerWidth * 0.5; // Extra buffer to fully show last card
+    // Use actual DOM measurements for precise scrolling
+    const getScrollAmount = () => {
+      const cardsWidth = cards.scrollWidth;
+      const viewportWidth = window.innerWidth;
+      return cardsWidth - viewportWidth;
+    };
 
     const ctx = gsap.context(() => {
+      const scrollAmount = getScrollAmount();
+      // Add 100vh buffer to ensure last card is fully visible before unpin
+      const totalScrollDistance = scrollAmount + window.innerHeight;
+
       gsap.to(cards, {
-        x: -scrollDistance,
+        x: () => -getScrollAmount(),
         ease: "none",
         scrollTrigger: {
           trigger: container,
           start: "top top",
-          end: () => `+=${scrollDistance + endBuffer}`,
+          end: () => `+=${totalScrollDistance}`,
           pin: true,
-          scrub: isMobile ? 0.5 : 1,
+          scrub: 0.3, // Reduced for more responsive feel
           anticipatePin: 1,
           invalidateOnRefresh: true,
           refreshPriority: 1,
           onUpdate: (self) => {
-            const progress = self.progress;
+            // Adjust progress calculation to account for buffer
+            // Animation completes at scrollAmount/totalScrollDistance progress
+            const animationEndProgress = scrollAmount / totalScrollDistance;
+            const adjustedProgress = Math.min(self.progress / animationEndProgress, 1);
+            
             const cardIndex = Math.min(
-              Math.floor(progress * journeyCards.length),
+              Math.floor(adjustedProgress * journeyCards.length),
               journeyCards.length - 1
             );
             
             setActiveIndex(cardIndex);
             
             const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
-            const localProgress = (progress * journeyCards.length) % 1;
+            const localProgress = (adjustedProgress * journeyCards.length) % 1;
             
             const currentColor = journeyCards[cardIndex].bgColor;
             const nextColor = journeyCards[nextIndex].bgColor;
