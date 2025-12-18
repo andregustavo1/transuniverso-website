@@ -169,7 +169,7 @@ const JornadaCarga = () => {
               className={`relative flex-shrink-0 flex items-center ${
                 isMobile 
                   ? 'w-[85vw] h-screen rounded-2xl overflow-hidden' 
-                  : 'w-screen h-screen'
+                  : 'w-full h-screen'
               }`}
               style={isMobile ? { backgroundColor: card.bgColor } : undefined}
             >

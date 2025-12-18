@@ -101,7 +101,7 @@
 
   /* Overlay scrollbar behavior */
   html {
-    overflow-y: overlay;
+    overflow-x: hidden;
   }
 }
 
