@@ -246,6 +246,21 @@ const UniverseCTA = () => {
           Solicitar Cotação
         </motion.button>
       </div>
+
+      {/* Watermark footer */}
+      <div
+        aria-hidden
+        className="absolute left-1/2 bottom-4 z-50 pointer-events-none text-foreground text-xs w-full text-center mb-2"
+        style={{
+          transform: 'translateX(-50%)',
+          fontFamily: '"Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace',
+          letterSpacing: '0.35em',
+          textTransform: 'uppercase',
+          userSelect: 'none',
+        }}
+      >
+        @2026 Transuniverso.
+      </div>
     </section>
   );
 };

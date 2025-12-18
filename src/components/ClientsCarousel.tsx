@@ -29,14 +29,14 @@ const ClientsCarousel = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="py-12 bg-background/50 border-y border-border/30 overflow-hidden"
+      className="py-8 md:py-12 bg-background/50 border-y border-border/30 overflow-hidden"
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="container mx-auto px-4 mb-8"
+        className="container mx-auto px-4 mb-4 md:mb-8"
       >
         <p className="text-center text-muted-foreground text-sm uppercase tracking-widest">
           Empresas que confiam em nós
@@ -58,7 +58,7 @@ const ClientsCarousel = () => {
               <img
                 src={client.logo}
                 alt={client.name}
-                className="h-10 w-auto object-contain opacity-60 hover:opacity-100 transition-opacity grayscale hover:grayscale-0"
+                className="h-10 w-auto object-contain transition-all duration-300 grayscale hover:grayscale-0"
               />
             </div>
           ))}

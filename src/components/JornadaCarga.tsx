@@ -85,30 +85,44 @@ const JornadaCarga = () => {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           refreshPriority: 1,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            const cardIndex = Math.min(
-              Math.floor(progress * journeyCards.length),
-              journeyCards.length - 1
-            );
+            onUpdate: (self) => {
+              const progress = self.progress;
+              const cardIndex = Math.min(
+                Math.floor(progress * journeyCards.length),
+                journeyCards.length - 1
+              );
 
-            setActiveIndex(cardIndex);
+              setActiveIndex(cardIndex);
 
-            const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
-            const localProgress = (progress * journeyCards.length) % 1;
+              // On mobile we avoid updating the color continuously here to
+              // reduce churn. We'll update `currentBgColor` when `activeIndex`
+              // changes so the CSS transition can animate smoothly.
+              if (isMobile) {
+                return;
+              }
 
-            const currentColor = journeyCards[cardIndex].bgColor;
-            const nextColor = journeyCards[nextIndex].bgColor;
+              const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
+              const localProgress = (progress * journeyCards.length) % 1;
 
-            const interpolatedColor = interpolateColor(currentColor, nextColor, localProgress);
-            setCurrentBgColor(interpolatedColor);
-          },
+              const currentColor = journeyCards[cardIndex].bgColor;
+              const nextColor = journeyCards[nextIndex].bgColor;
+
+              const interpolatedColor = interpolateColor(currentColor, nextColor, localProgress);
+              setCurrentBgColor(interpolatedColor);
+            },
         },
       });
     }, section);
 
     return () => ctx.revert();
   }, [isMobile]);
+
+  // When the active index changes on mobile, set the section background
+  // to the card's exact color so the CSS transition animates it smoothly.
+  useEffect(() => {
+    if (!isMobile) return;
+    setCurrentBgColor(journeyCards[activeIndex].bgColor);
+  }, [activeIndex, isMobile]);
 
   const interpolateColor = (color1: string, color2: string, factor: number): string => {
     const hex1 = color1.replace('#', '');
@@ -135,7 +149,7 @@ const JornadaCarga = () => {
       className="relative"
       style={{ 
         backgroundColor: currentBgColor, 
-        transition: 'background-color 0.1s ease-out',
+        transition: isMobile ? 'background-color 400ms cubic-bezier(.22,1,.36,1)' : 'background-color 0.1s ease-out',
         overscrollBehavior: 'none',
       }}
     >
@@ -150,14 +164,14 @@ const JornadaCarga = () => {
       >
         <div 
           ref={cardsRef}
-          className={`flex h-full ${isMobile ? 'gap-4 pl-4' : ''}`}
-          style={{ width: 'fit-content' }}
+          className={`flex h-full ${isMobile ? 'gap-0 pl-4' : ''}`}
+          style={{ width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw` }}
         >
           {/* Horizontal line decoration - only on desktop */}
           {!isMobile && (
-            <div className="fixed top-1/2 left-0 right-0 h-[1px] z-10 pointer-events-none">
-              <div className="w-full h-full bg-gradient-to-r from-transparent via-orange-500/40 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/30 to-transparent blur-sm animate-pulse" />
+            <div className="fixed top-1/2 left-0 right-0 h-[1px] z-10 pointer-events-none hidden">
+              <div className="w-full h-full bg-gradient-to-r from-transparent via-red-600/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-600/30 to-transparent blur-sm animate-pulse" />
             </div>
           )}
 
@@ -166,8 +180,8 @@ const JornadaCarga = () => {
               key={card.id}
               className={`relative flex-shrink-0 flex items-center ${
                 isMobile 
-                  ? 'w-[85vw] h-screen rounded-2xl overflow-hidden' 
-                  : 'w-full h-screen'
+                  ? 'w-[93vw] h-screen rounded-2xl overflow-hidden' 
+                  : 'w-screen h-screen'
               }`}
               style={isMobile ? { backgroundColor: card.bgColor } : undefined}
             >
@@ -193,15 +207,15 @@ const JornadaCarga = () => {
               </div>
 
               {/* Content */}
-              <div className={`relative z-10 w-full ${isMobile ? 'px-5 py-8' : 'px-8 md:px-16 lg:px-24'}`}>
+              <div className={`relative z-10 w-full overflow-hidden ${isMobile ? 'px-5 py-8' : 'px-8 md:px-16 lg:px-24'}`}>
                 <motion.div
-                  className={isMobile ? 'max-w-full' : 'max-w-[40%]'}
+                  className={isMobile ? 'w-full' : 'max-w-[40%] overflow-hidden'}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: false, amount: 0.5 }}
                   transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <span className={`tracking-[0.2em] text-orange-500/80 font-medium mb-3 md:mb-4 block ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                  <span className={`tracking-[0.2em] text-red-600/80 font-medium mb-3 md:mb-4 block ${isMobile ? 'text-xs' : 'text-sm'}`}>
                     {card.title}
                   </span>
 
@@ -209,12 +223,12 @@ const JornadaCarga = () => {
                     {card.subtitle}
                   </h2>
 
-                  <p className={`text-gray-400 leading-relaxed tracking-wide ${isMobile ? 'text-sm max-w-[90%]' : 'text-lg md:text-xl max-w-lg'}`}>
+                  <p className={`text-gray-400 leading-relaxed tracking-wide ${isMobile ? 'text-sm w-full break-words' : 'text-lg md:text-xl max-w-lg'}`}>
                     {card.description}
                   </p>
 
                   <motion.div
-                    className={`mt-6 md:mt-12 h-[2px] bg-gradient-to-r from-orange-500 to-transparent`}
+                    className={`mt-6 md:mt-12 h-[2px] bg-gradient-to-r from-red-600 to-transparent`}
                     initial={{ width: 0 }}
                     whileInView={{ width: isMobile ? '40%' : '60%' }}
                     viewport={{ once: false, amount: 0.5 }}
@@ -222,33 +236,26 @@ const JornadaCarga = () => {
                   />
                 </motion.div>
               </div>
-
-              {/* Card indicator on mobile */}
-              {isMobile && (
-                <div className="absolute bottom-8 left-5 text-xs text-gray-500">
-                  {String(index + 1).padStart(2, '0')} / {String(journeyCards.length).padStart(2, '0')}
-                </div>
-              )}
             </div>
           ))}
           
           {/* Extra padding at the end for mobile */}
           {isMobile && <div className="w-4 flex-shrink-0" />}
         </div>
-      </div>
 
-      {/* Progress indicator */}
-      <div className={`absolute ${isMobile ? 'bottom-8 right-5' : 'bottom-12 left-8 md:left-16 lg:left-24'} flex items-center gap-2 md:gap-3 z-20`}>
-        {journeyCards.map((_, i) => (
-          <div
-            key={i}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              i === activeIndex 
-                ? 'bg-orange-500 w-6 md:w-8' 
-                : 'bg-gray-600 w-2'
-            }`}
-          />
-        ))}
+        {/* Progress indicator - moved inside container so it stays visible during pinned scroll */}
+        <div className={`absolute ${isMobile ? 'bottom-8 right-5' : 'bottom-12 left-8 md:left-16 lg:left-24'} flex items-center gap-2 md:gap-3 z-50 pointer-events-none`}>
+          {journeyCards.map((_, i) => (
+            <div
+              key={i}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                i === activeIndex 
+                  ? 'bg-red-600 w-6 md:w-8' 
+                  : 'bg-gray-600 w-2'
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

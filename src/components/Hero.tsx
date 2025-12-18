@@ -57,7 +57,7 @@ const Hero = () => {
         }} transition={{
           duration: 0.8,
           ease: [0.22, 1, 0.36, 1]
-        }} className="mb-5">
+        }} className="mt-28 mb-2 md:mb-4 md:mt-2">
             <img src={logoHero} alt="Transuniverso" className="h-16 md:h-20 w-auto mx-auto" />
           </motion.div>
 
@@ -122,7 +122,7 @@ const Hero = () => {
           duration: 1,
           delay: 0.8,
           ease: [0.22, 1, 0.36, 1]
-        }} className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
+        }} className="mt-12 mb-16 md:mt-16 md:mb-0 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
             {[{
             value: 15,
             prefix: "+",
