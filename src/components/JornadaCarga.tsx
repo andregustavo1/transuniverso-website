@@ -81,10 +81,13 @@ const JornadaCarga = () => {
           start: "top top",
           end: () => `+=${getScrollAmount()}`,
           pin: true,
+          // on mobile use transform-based pinning to avoid layout jank
+          pinType: isMobile ? 'transform' : undefined,
           scrub: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           refreshPriority: 1,
+          fastScrollEnd: true,
             onUpdate: (self) => {
               const progress = self.progress;
               const cardIndex = Math.min(
@@ -165,7 +168,11 @@ const JornadaCarga = () => {
         <div 
           ref={cardsRef}
           className={`flex h-full ${isMobile ? 'gap-0 pl-4' : ''}`}
-          style={{ width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw` }}
+          style={{
+            width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw`,
+            willChange: 'transform',
+            transform: 'translateZ(0)'
+          }}
         >
           {/* Horizontal line decoration - only on desktop */}
           {!isMobile && (
@@ -190,8 +197,9 @@ const JornadaCarga = () => {
                 <div 
                   className="w-full h-full rounded-full"
                   style={{
-                    background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
-                    filter: isMobile ? 'blur(30px)' : 'blur(60px)',
+                    background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.25)' : 'rgba(147,51,234,0.16)'} 0%, transparent 70%)`,
+                    // reduce blur on mobile to improve performance
+                    filter: isMobile ? 'blur(10px)' : 'blur(60px)',
                   }}
                 />
                 {!isMobile && (
