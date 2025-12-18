@@ -72,10 +72,6 @@ const JornadaCarga = () => {
     // Horizontal scroll should END exactly when the last card is fully in view.
     const getScrollAmount = () => Math.max(0, cards.scrollWidth - window.innerWidth);
 
-    // Throttle state updates on mobile to reduce re-renders
-    let lastUpdateTime = 0;
-    const updateThrottle = isMobile ? 33 : 16; // ~30fps on mobile, ~60fps on desktop
-
     const ctx = gsap.context(() => {
       gsap.to(cards, {
         x: () => -getScrollAmount(),
@@ -85,43 +81,35 @@ const JornadaCarga = () => {
           start: "top top",
           end: () => `+=${getScrollAmount()}`,
           pin: true,
-          // on mobile use transform-based pinning to avoid layout jank
-          pinType: isMobile ? 'transform' : undefined,
-          // smoother scrub on mobile (less aggressive) or immediate scrub on desktop
-          scrub: isMobile ? 0.5 : true,
+          scrub: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           refreshPriority: 1,
-          fastScrollEnd: true,
-          onUpdate: (self) => {
-            const now = Date.now();
-            if (now - lastUpdateTime < updateThrottle) return;
-            lastUpdateTime = now;
+            onUpdate: (self) => {
+              const progress = self.progress;
+              const cardIndex = Math.min(
+                Math.floor(progress * journeyCards.length),
+                journeyCards.length - 1
+              );
 
-            const progress = self.progress;
-            const cardIndex = Math.min(
-              Math.floor(progress * journeyCards.length),
-              journeyCards.length - 1
-            );
+              setActiveIndex(cardIndex);
 
-            setActiveIndex(cardIndex);
+              // On mobile we avoid updating the color continuously here to
+              // reduce churn. We'll update `currentBgColor` when `activeIndex`
+              // changes so the CSS transition can animate smoothly.
+              if (isMobile) {
+                return;
+              }
 
-            // On mobile we avoid updating the color continuously here to
-            // reduce churn. We'll update `currentBgColor` when `activeIndex`
-            // changes so the CSS transition can animate smoothly.
-            if (isMobile) {
-              return;
-            }
+              const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
+              const localProgress = (progress * journeyCards.length) % 1;
 
-            const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
-            const localProgress = (progress * journeyCards.length) % 1;
+              const currentColor = journeyCards[cardIndex].bgColor;
+              const nextColor = journeyCards[nextIndex].bgColor;
 
-            const currentColor = journeyCards[cardIndex].bgColor;
-            const nextColor = journeyCards[nextIndex].bgColor;
-
-            const interpolatedColor = interpolateColor(currentColor, nextColor, localProgress);
-            setCurrentBgColor(interpolatedColor);
-          },
+              const interpolatedColor = interpolateColor(currentColor, nextColor, localProgress);
+              setCurrentBgColor(interpolatedColor);
+            },
         },
       });
     }, section);
@@ -177,11 +165,7 @@ const JornadaCarga = () => {
         <div 
           ref={cardsRef}
           className={`flex h-full ${isMobile ? 'gap-0 pl-4' : ''}`}
-          style={{
-            width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw`,
-            willChange: 'transform',
-            transform: 'translateZ(0)'
-          }}
+          style={{ width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw` }}
         >
           {/* Horizontal line decoration - only on desktop */}
           {!isMobile && (
@@ -206,9 +190,8 @@ const JornadaCarga = () => {
                 <div 
                   className="w-full h-full rounded-full"
                   style={{
-                    background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.25)' : 'rgba(147,51,234,0.16)'} 0%, transparent 70%)`,
-                    // reduce blur on mobile to improve performance
-                    filter: isMobile ? 'blur(10px)' : 'blur(60px)',
+                    background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
+                    filter: isMobile ? 'blur(30px)' : 'blur(60px)',
                   }}
                 />
                 {!isMobile && (
