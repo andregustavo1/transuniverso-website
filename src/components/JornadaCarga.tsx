@@ -72,16 +72,17 @@ const JornadaCarga = () => {
     const cardWidth = isMobile ? window.innerWidth * 0.85 : window.innerWidth;
     const gap = isMobile ? 16 : 0; // gap between cards on mobile
     const totalCards = journeyCards.length;
-    const totalWidth = (cardWidth + gap) * totalCards - window.innerWidth;
+    const scrollDistance = (cardWidth + gap) * (totalCards - 1); // Distance to scroll through all cards
+    const endBuffer = window.innerWidth * 0.5; // Extra buffer to fully show last card
 
     const ctx = gsap.context(() => {
       gsap.to(cards, {
-        x: -totalWidth,
+        x: -scrollDistance,
         ease: "none",
         scrollTrigger: {
           trigger: container,
           start: "top top",
-          end: () => `+=${totalWidth}`,
+          end: () => `+=${scrollDistance + endBuffer}`,
           pin: true,
           scrub: isMobile ? 0.5 : 1,
           anticipatePin: 1,
