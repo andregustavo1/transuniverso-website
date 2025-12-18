@@ -72,6 +72,10 @@ const JornadaCarga = () => {
     // Horizontal scroll should END exactly when the last card is fully in view.
     const getScrollAmount = () => Math.max(0, cards.scrollWidth - window.innerWidth);
 
+    // Throttle state updates on mobile to reduce re-renders
+    let lastUpdateTime = 0;
+    const updateThrottle = isMobile ? 33 : 16; // ~30fps on mobile, ~60fps on desktop
+
     const ctx = gsap.context(() => {
       gsap.to(cards, {
         x: () => -getScrollAmount(),
@@ -83,36 +87,41 @@ const JornadaCarga = () => {
           pin: true,
           // on mobile use transform-based pinning to avoid layout jank
           pinType: isMobile ? 'transform' : undefined,
-          scrub: true,
+          // smoother scrub on mobile (less aggressive) or immediate scrub on desktop
+          scrub: isMobile ? 0.5 : true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           refreshPriority: 1,
           fastScrollEnd: true,
-            onUpdate: (self) => {
-              const progress = self.progress;
-              const cardIndex = Math.min(
-                Math.floor(progress * journeyCards.length),
-                journeyCards.length - 1
-              );
+          onUpdate: (self) => {
+            const now = Date.now();
+            if (now - lastUpdateTime < updateThrottle) return;
+            lastUpdateTime = now;
 
-              setActiveIndex(cardIndex);
+            const progress = self.progress;
+            const cardIndex = Math.min(
+              Math.floor(progress * journeyCards.length),
+              journeyCards.length - 1
+            );
 
-              // On mobile we avoid updating the color continuously here to
-              // reduce churn. We'll update `currentBgColor` when `activeIndex`
-              // changes so the CSS transition can animate smoothly.
-              if (isMobile) {
-                return;
-              }
+            setActiveIndex(cardIndex);
 
-              const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
-              const localProgress = (progress * journeyCards.length) % 1;
+            // On mobile we avoid updating the color continuously here to
+            // reduce churn. We'll update `currentBgColor` when `activeIndex`
+            // changes so the CSS transition can animate smoothly.
+            if (isMobile) {
+              return;
+            }
 
-              const currentColor = journeyCards[cardIndex].bgColor;
-              const nextColor = journeyCards[nextIndex].bgColor;
+            const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
+            const localProgress = (progress * journeyCards.length) % 1;
 
-              const interpolatedColor = interpolateColor(currentColor, nextColor, localProgress);
-              setCurrentBgColor(interpolatedColor);
-            },
+            const currentColor = journeyCards[cardIndex].bgColor;
+            const nextColor = journeyCards[nextIndex].bgColor;
+
+            const interpolatedColor = interpolateColor(currentColor, nextColor, localProgress);
+            setCurrentBgColor(interpolatedColor);
+          },
         },
       });
     }, section);
