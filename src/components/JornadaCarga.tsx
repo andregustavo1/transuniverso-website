@@ -68,49 +68,38 @@ const JornadaCarga = () => {
 
     if (!section || !container || !cards) return;
 
-    // Use actual DOM measurements for precise scrolling
-    const getScrollAmount = () => {
-      const cardsWidth = cards.scrollWidth;
-      const viewportWidth = window.innerWidth;
-      return cardsWidth - viewportWidth;
-    };
+    // Use actual DOM measurements for precise scrolling.
+    // Horizontal scroll should END exactly when the last card is fully in view.
+    const getScrollAmount = () => Math.max(0, cards.scrollWidth - window.innerWidth);
 
     const ctx = gsap.context(() => {
-      const scrollAmount = getScrollAmount();
-      // Add 100vh buffer to ensure last card is fully visible before unpin
-      const totalScrollDistance = scrollAmount + window.innerHeight;
-
       gsap.to(cards, {
         x: () => -getScrollAmount(),
         ease: "none",
         scrollTrigger: {
           trigger: container,
           start: "top top",
-          end: () => `+=${totalScrollDistance}`,
+          end: () => `+=${getScrollAmount()}`,
           pin: true,
-          scrub: 0.3, // Reduced for more responsive feel
+          scrub: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           refreshPriority: 1,
           onUpdate: (self) => {
-            // Adjust progress calculation to account for buffer
-            // Animation completes at scrollAmount/totalScrollDistance progress
-            const animationEndProgress = scrollAmount / totalScrollDistance;
-            const adjustedProgress = Math.min(self.progress / animationEndProgress, 1);
-            
+            const progress = self.progress;
             const cardIndex = Math.min(
-              Math.floor(adjustedProgress * journeyCards.length),
+              Math.floor(progress * journeyCards.length),
               journeyCards.length - 1
             );
-            
+
             setActiveIndex(cardIndex);
-            
+
             const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
-            const localProgress = (adjustedProgress * journeyCards.length) % 1;
-            
+            const localProgress = (progress * journeyCards.length) % 1;
+
             const currentColor = journeyCards[cardIndex].bgColor;
             const nextColor = journeyCards[nextIndex].bgColor;
-            
+
             const interpolatedColor = interpolateColor(currentColor, nextColor, localProgress);
             setCurrentBgColor(interpolatedColor);
           },
