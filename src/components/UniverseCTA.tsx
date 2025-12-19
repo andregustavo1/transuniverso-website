@@ -16,6 +16,7 @@ interface Star {
 const UniverseCTA = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const starsRef = useRef<Star[]>([]);
   const mouseRef = useRef({ x: 0, y: 0, active: false });
   const animationRef = useRef<number>();
@@ -41,6 +42,17 @@ const UniverseCTA = () => {
       canvas.style.height = `${rect.height}px`;
       ctx.scale(dpr, dpr);
       initStars(rect.width, rect.height);
+
+      if (buttonRef.current) {
+        const buttonRect = buttonRef.current.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        buttonPosRef.current = {
+          x: buttonRect.left - containerRect.left,
+          y: buttonRect.top - containerRect.top,
+          width: buttonRect.width,
+          height: buttonRect.height,
+        };
+      }
     };
 
     const initStars = (width: number, height: number) => {
@@ -89,21 +101,19 @@ const UniverseCTA = () => {
           }
         }
 
-        // Button orbit effect when hovered
-        if (buttonHovered) {
-          const buttonCenterX = buttonPos.x + buttonPos.width / 2;
-          const buttonCenterY = buttonPos.y + buttonPos.height / 2;
-          const dx = buttonCenterX - star.x;
-          const dy = buttonCenterY - star.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const orbitRadius = 150;
+        // Button orbit effect
+        const buttonCenterX = buttonPos.x + buttonPos.width / 2;
+        const buttonCenterY = buttonPos.y + buttonPos.height / 2;
+        const dx = buttonCenterX - star.x;
+        const dy = buttonCenterY - star.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const orbitRadius = 200;
 
-          if (distance < orbitRadius && distance > 30) {
-            const angle = Math.atan2(dy, dx);
-            const orbitSpeed = (1 - distance / orbitRadius) * 0.15;
-            star.vx += Math.cos(angle + Math.PI / 2) * orbitSpeed;
-            star.vy += Math.sin(angle + Math.PI / 2) * orbitSpeed;
-          }
+        if (distance < orbitRadius && distance > 30) {
+          const angle = Math.atan2(dy, dx);
+          const orbitSpeed = (1 - distance / orbitRadius) * 0.15;
+          star.vx += Math.cos(angle + Math.PI / 2) * orbitSpeed;
+          star.vy += Math.sin(angle + Math.PI / 2) * orbitSpeed;
         }
 
         // Apply velocity with damping
@@ -186,16 +196,6 @@ const UniverseCTA = () => {
   }, []);
 
   const handleButtonMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const containerRect = containerRef.current?.getBoundingClientRect();
-    if (containerRect) {
-      buttonPosRef.current = {
-        x: rect.left - containerRect.left,
-        y: rect.top - containerRect.top,
-        width: rect.width,
-        height: rect.height,
-      };
-    }
     isButtonHoveredRef.current = true;
     setIsButtonHovered(true);
   };
@@ -228,6 +228,7 @@ const UniverseCTA = () => {
         </motion.h2>
 
         <motion.button
+          ref={buttonRef}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
