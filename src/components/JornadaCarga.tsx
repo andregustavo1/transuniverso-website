@@ -167,13 +167,6 @@ const JornadaCarga = () => {
           className={`flex h-full ${isMobile ? 'gap-0 pl-4' : ''}`}
           style={{ width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw` }}
         >
-          {/* Horizontal line decoration - only on desktop */}
-          {!isMobile && (
-            <div className="fixed top-1/2 left-0 right-0 h-[1px] z-10 pointer-events-none hidden">
-              <div className="w-full h-full bg-gradient-to-r from-transparent via-red-600/40 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-600/30 to-transparent blur-sm animate-pulse" />
-            </div>
-          )}
 
           {journeyCards.map((card, index) => (
             <div
