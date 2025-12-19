@@ -38,12 +38,21 @@ const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+  return <section className="relative min-h-screen overflow-hidden">
       {/* Video Background */}
       <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
         <source src="/videos/hero-bg.mp4" type="video/mp4" />
@@ -53,7 +62,7 @@ const Hero = () => {
       <div className="absolute inset-0 video-overlay" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 text-center" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
+      <div className="absolute top-1/2 left-1/2 z-10 container mx-auto px-4 text-center" style={{ transform: `translate(-50%, -50%) translateY(${scrollY * 0.2}px)`, willChange: 'transform' }}>
         <div className="max-w-4xl mx-auto">
           {/* Logo */}
           <motion.div initial={{

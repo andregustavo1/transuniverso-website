@@ -101,13 +101,6 @@ const JornadaCarga = () => {
 
               setActiveIndex(cardIndex);
 
-              // On mobile we avoid updating the color continuously here to
-              // reduce churn. We'll update `currentBgColor` when `activeIndex`
-              // changes so the CSS transition can animate smoothly.
-              if (isMobile) {
-                return;
-              }
-
               const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
               const localProgress = (progress * journeyCards.length) % 1;
 
@@ -124,12 +117,6 @@ const JornadaCarga = () => {
     return () => ctx.revert();
   }, [isMobile]);
 
-  // When the active index changes on mobile, set the section background
-  // to the card's exact color so the CSS transition animates it smoothly.
-  useEffect(() => {
-    if (!isMobile) return;
-    setCurrentBgColor(journeyCards[activeIndex].bgColor);
-  }, [activeIndex, isMobile]);
 
   const interpolateColor = (color1: string, color2: string, factor: number): string => {
     const hex1 = color1.replace('#', '');
@@ -183,7 +170,6 @@ const JornadaCarga = () => {
                   ? 'w-[93vw] h-screen rounded-2xl overflow-hidden' 
                   : 'w-screen h-screen'
               }`}
-              style={isMobile ? { backgroundColor: card.bgColor } : undefined}
             >
               {/* Decorative background element */}
               <div className={`absolute ${isMobile ? 'right-4 top-1/4' : 'right-[10%] top-1/2 -translate-y-1/2'} ${isMobile ? 'w-32 h-32' : 'w-[40vw] h-[40vw]'} opacity-20`}>
