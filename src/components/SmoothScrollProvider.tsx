@@ -8,12 +8,11 @@ interface SmoothScrollProviderProps {
 const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) => {
   return (
     <ReactLenis
-      root
+      
       options={{
         lerp: 0.1,
         duration: 1.2,
         smoothWheel: true,
-        touchMultiplier: 0,
       }}
     >
       {children}

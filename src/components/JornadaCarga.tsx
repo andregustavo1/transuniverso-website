@@ -6,6 +6,13 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 gsap.registerPlugin(ScrollTrigger);
 
+ScrollTrigger.config({
+  ignoreMobileResize: true // Evita que a barra de endereços do mobile recalcule tudo ao sumir/aparecer
+});
+
+// A "bala de prata" para o lag de scroll
+ScrollTrigger.normalizeScroll(true);
+
 interface JourneyCard {
   id: number;
   title: string;
