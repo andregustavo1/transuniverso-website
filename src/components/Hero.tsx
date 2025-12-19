@@ -35,6 +35,14 @@ const AnimatedNumber = ({
     </span>;
 };
 const Hero = () => {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Video Background */}
       <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
@@ -45,7 +53,7 @@ const Hero = () => {
       <div className="absolute inset-0 video-overlay" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 text-center">
+      <div className="relative z-10 container mx-auto px-4 text-center" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
         <div className="max-w-4xl mx-auto">
           {/* Logo */}
           <motion.div initial={{
