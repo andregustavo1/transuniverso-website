@@ -93,10 +93,15 @@ const JornadaCarga = () => {
           end: () => `+=${getScrollAmount()}`,
           pin: true,
           pinSpacing: true,
-          scrub: isMobile ? 1 : true, // Mobile: valor maior = menos recálculos, mais suave
-          anticipatePin: 1,
+          // Mobile: scrub maior = mais suave, menos "travado"
+          // Valor 2-3 cria uma sensação de "momentum" mais natural
+          scrub: isMobile ? 2.5 : 0.8,
+          // Removido anticipatePin em mobile - causa o "snap" brusco
+          anticipatePin: isMobile ? 0 : 1,
           invalidateOnRefresh: true,
-          refreshPriority: -1, // Processa por último para evitar conflitos
+          refreshPriority: -1,
+          // Previne problemas com scroll rápido
+          fastScrollEnd: isMobile ? 3000 : true,
           onUpdate: (self) => {
             const progress = self.progress;
             const cardIndex = Math.min(
@@ -132,9 +137,19 @@ const JornadaCarga = () => {
       style={{ 
         backgroundColor: journeyCards[0].bgColor,
         overscrollBehavior: 'none',
-        transition: 'background-color 0.5s ease-out', // CSS transition em vez de GSAP
+        transition: 'background-color 0.5s ease-out',
       }}
     >
+      {/* Gradient de entrada suave - ajuda a mascarar a transição do pin */}
+      {isMobile && (
+        <div 
+          className="absolute top-0 left-0 right-0 h-20 pointer-events-none z-30"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(10,10,15,0.8) 0%, transparent 100%)',
+          }}
+        />
+      )}
+
       <div className="absolute top-6 md:top-8 left-6 md:left-8 z-20">
         <span className="text-[10px] md:text-xs tracking-[0.3em] text-gray-500 uppercase">Jornada da Carga</span>
       </div>
@@ -145,6 +160,8 @@ const JornadaCarga = () => {
         style={{ 
           touchAction: 'pan-y pinch-zoom',
           height: isMobile ? `${stableHeight}px` : undefined,
+          // Suaviza micro-movimentos durante o pin
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         <div 
@@ -152,9 +169,11 @@ const JornadaCarga = () => {
           className={`flex h-full ${isMobile ? 'gap-0 pl-4' : ''}`}
           style={{ 
             width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw`,
-            willChange: isMobile ? 'auto' : 'transform', // Mobile: desabilitar para economizar memória GPU
+            willChange: isMobile ? 'auto' : 'transform',
             backfaceVisibility: 'hidden',
-            transform: 'translateZ(0)', // Força layer de composição
+            transform: 'translateZ(0)',
+            // Adiciona transição suave no transform para mobile
+            transition: isMobile ? 'none' : undefined,
           }}
         >
 
