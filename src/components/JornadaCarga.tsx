@@ -10,8 +10,7 @@ ScrollTrigger.config({
   ignoreMobileResize: true // Evita que a barra de endereços do mobile recalcule tudo ao sumir/aparecer
 });
 
-// A "bala de prata" para o lag de scroll
-ScrollTrigger.normalizeScroll(true);
+// REMOVIDO: ScrollTrigger.normalizeScroll(true) - muito pesado em mobile
 
 interface JourneyCard {
   id: number;
@@ -89,10 +88,10 @@ const JornadaCarga = () => {
           start: "top top",
           end: () => `+=${getScrollAmount()}`,
           pin: true,
-          scrub: true,
+          pinSpacing: true,
+          scrub: true, // Voltando para true - mais preciso, sem glitch de "ida e volta"
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          refreshPriority: 1,
           onUpdate: (self) => {
             const progress = self.progress;
             const cardIndex = Math.min(
@@ -100,18 +99,15 @@ const JornadaCarga = () => {
               journeyCards.length - 1
             );
 
-            // Apenas atualiza state quando realmente muda de card (reduz re-renders)
+            // Apenas atualiza quando realmente muda de card
             if (cardIndex !== lastActiveIndex) {
-              setActiveIndex(cardIndex);
               lastActiveIndex = cardIndex;
-
-              // Anima a cor de fundo com GSAP (evita múltiplos setState por frame)
-              gsap.to(section, {
-                backgroundColor: journeyCards[cardIndex].bgColor,
-                duration: 0.6,
-                ease: "power2.inOut",
-                overwrite: "auto",
-              });
+              
+              // Usar CSS transition em vez de GSAP (mais leve)
+              section.style.backgroundColor = journeyCards[cardIndex].bgColor;
+              
+              // Atualizar state apenas para o indicador de progresso
+              setActiveIndex(cardIndex);
             }
           },
         },
@@ -131,6 +127,7 @@ const JornadaCarga = () => {
       style={{ 
         backgroundColor: journeyCards[0].bgColor,
         overscrollBehavior: 'none',
+        transition: 'background-color 0.5s ease-out', // CSS transition em vez de GSAP
       }}
     >
       <div className="absolute top-6 md:top-8 left-6 md:left-8 z-20">
@@ -145,7 +142,11 @@ const JornadaCarga = () => {
         <div 
           ref={cardsRef}
           className={`flex h-full ${isMobile ? 'gap-0 pl-4' : ''}`}
-          style={{ width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw` }}
+          style={{ 
+            width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw`,
+            willChange: 'transform', // GPU acceleration para evitar glitch
+            backfaceVisibility: 'hidden', // Estabiliza renderização
+          }}
         >
 
           {journeyCards.map((card, index) => (
@@ -158,23 +159,16 @@ const JornadaCarga = () => {
               }`}
             >
               {/* Decorative background element */}
-              <div className={`absolute ${isMobile ? 'right-4 top-1/4' : 'right-[10%] top-1/2 -translate-y-1/2'} ${isMobile ? 'w-32 h-32' : 'w-[40vw] h-[40vw]'} opacity-20`}>
+              <div className={`absolute ${isMobile ? 'right-4 top-1/4' : 'right-[10%] top-1/2 -translate-y-1/2'} ${isMobile ? 'w-32 h-32' : 'w-[40vw] h-[40vw]'} opacity-20 pointer-events-none`}>
                 <div 
                   className="w-full h-full rounded-full"
                   style={{
                     background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
                     filter: isMobile ? 'blur(30px)' : 'blur(60px)',
+                    willChange: 'auto', // Evitar composição desnecessária
                   }}
                 />
-                {!isMobile && (
-                  <div
-                    className="absolute inset-0 rounded-full animate-spin-slow"
-                    style={{
-                      background: `conic-gradient(from ${index * 72}deg, transparent, rgba(249,115,22,0.1), transparent)`,
-                      animationDuration: '20s',
-                    }}
-                  />
-                )}
+                {/* Removido animate-spin-slow - animação CSS infinita pesada */}
               </div>
 
               {/* Content */}
@@ -183,8 +177,8 @@ const JornadaCarga = () => {
                   className={isMobile ? 'w-full' : 'max-w-[40%] overflow-hidden'}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: false, amount: 0.5 }}
-                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                  viewport={{ once: true, amount: 0.3 }} // once: true = anima apenas 1 vez
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <span className={`tracking-[0.2em] text-red-600/80 font-medium mb-3 md:mb-4 block ${isMobile ? 'text-xs' : 'text-sm'}`}>
                     {card.title}
@@ -202,8 +196,8 @@ const JornadaCarga = () => {
                     className={`mt-6 md:mt-12 h-[2px] bg-gradient-to-r from-red-600 to-transparent`}
                     initial={{ width: 0 }}
                     whileInView={{ width: isMobile ? '40%' : '60%' }}
-                    viewport={{ once: false, amount: 0.5 }}
-                    transition={{ duration: 1, delay: 0.3 }}
+                    viewport={{ once: true, amount: 0.3 }} // once: true = anima apenas 1 vez
+                    transition={{ duration: 0.8, delay: 0.2 }}
                   />
                 </motion.div>
               </div>
