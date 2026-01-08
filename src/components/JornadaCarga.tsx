@@ -89,7 +89,7 @@ const JornadaCarga = () => {
           end: () => `+=${getScrollAmount()}`,
           pin: true,
           pinSpacing: true,
-          scrub: true, // Voltando para true - mais preciso, sem glitch de "ida e volta"
+          scrub: isMobile ? 1 : true, // Mobile: valor maior = menos recálculos, mais suave
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
@@ -144,8 +144,9 @@ const JornadaCarga = () => {
           className={`flex h-full ${isMobile ? 'gap-0 pl-4' : ''}`}
           style={{ 
             width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw`,
-            willChange: 'transform', // GPU acceleration para evitar glitch
-            backfaceVisibility: 'hidden', // Estabiliza renderização
+            willChange: isMobile ? 'auto' : 'transform', // Mobile: desabilitar para economizar memória GPU
+            backfaceVisibility: 'hidden',
+            transform: 'translateZ(0)', // Força layer de composição
           }}
         >
 
@@ -158,48 +159,70 @@ const JornadaCarga = () => {
                   : 'w-screen h-screen'
               }`}
             >
-              {/* Decorative background element */}
-              <div className={`absolute ${isMobile ? 'right-4 top-1/4' : 'right-[10%] top-1/2 -translate-y-1/2'} ${isMobile ? 'w-32 h-32' : 'w-[40vw] h-[40vw]'} opacity-20 pointer-events-none`}>
-                <div 
-                  className="w-full h-full rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
-                    filter: isMobile ? 'blur(30px)' : 'blur(60px)',
-                    willChange: 'auto', // Evitar composição desnecessária
-                  }}
-                />
-                {/* Removido animate-spin-slow - animação CSS infinita pesada */}
-              </div>
+              {/* Decorative background element - REMOVIDO no mobile para performance */}
+              {!isMobile && (
+                <div className="absolute right-[10%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] opacity-20 pointer-events-none">
+                  <div 
+                    className="w-full h-full rounded-full"
+                    style={{
+                      background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
+                      filter: 'blur(60px)',
+                    }}
+                  />
+                </div>
+              )}
 
               {/* Content */}
               <div className={`relative z-10 w-full overflow-hidden ${isMobile ? 'px-5 py-8' : 'px-8 md:px-16 lg:px-24'}`}>
-                <motion.div
-                  className={isMobile ? 'w-full' : 'max-w-[40%] overflow-hidden'}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }} // once: true = anima apenas 1 vez
-                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <span className={`tracking-[0.2em] text-red-600/80 font-medium mb-3 md:mb-4 block ${isMobile ? 'text-xs' : 'text-sm'}`}>
-                    {card.title}
-                  </span>
+                {/* Removido motion.div no mobile - usar CSS simples */}
+                {isMobile ? (
+                  <div className="w-full">
+                    <span className="tracking-[0.2em] text-red-600/80 font-medium mb-3 block text-xs">
+                      {card.title}
+                    </span>
 
-                  <h2 className={`font-extrabold text-white mb-4 md:mb-8 leading-[1.1] tracking-tight ${isMobile ? 'text-2xl' : 'text-4xl md:text-5xl lg:text-7xl'}`}>
-                    {card.subtitle}
-                  </h2>
+                    <h2 className="font-extrabold text-white mb-4 leading-[1.1] tracking-tight text-2xl">
+                      {card.subtitle}
+                    </h2>
 
-                  <p className={`text-gray-400 leading-relaxed tracking-wide ${isMobile ? 'text-sm w-full break-words' : 'text-lg md:text-xl max-w-lg'}`}>
-                    {card.description}
-                  </p>
+                    <p className="text-gray-400 leading-relaxed tracking-wide text-sm w-full break-words">
+                      {card.description}
+                    </p>
 
+                    <div 
+                      className="mt-6 h-[2px] bg-gradient-to-r from-red-600 to-transparent"
+                      style={{ width: '40%' }}
+                    />
+                  </div>
+                ) : (
                   <motion.div
-                    className={`mt-6 md:mt-12 h-[2px] bg-gradient-to-r from-red-600 to-transparent`}
-                    initial={{ width: 0 }}
-                    whileInView={{ width: isMobile ? '40%' : '60%' }}
-                    viewport={{ once: true, amount: 0.3 }} // once: true = anima apenas 1 vez
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
-                </motion.div>
+                    className="max-w-[40%] overflow-hidden"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <span className="tracking-[0.2em] text-red-600/80 font-medium mb-3 md:mb-4 block text-sm">
+                      {card.title}
+                    </span>
+
+                    <h2 className="font-extrabold text-white mb-4 md:mb-8 leading-[1.1] tracking-tight text-4xl md:text-5xl lg:text-7xl">
+                      {card.subtitle}
+                    </h2>
+
+                    <p className="text-gray-400 leading-relaxed tracking-wide text-lg md:text-xl max-w-lg">
+                      {card.description}
+                    </p>
+
+                    <motion.div
+                      className="mt-6 md:mt-12 h-[2px] bg-gradient-to-r from-red-600 to-transparent"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: '60%' }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                    />
+                  </motion.div>
+                )}
               </div>
             </div>
           ))}
