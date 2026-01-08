@@ -89,8 +89,8 @@ const Hero = () => {
           duration: 1,
           delay: 0.2,
           ease: [0.22, 1, 0.36, 1]
-        }} className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-6 lg:text-6xl">
-            Texto Texto Texto Texto Texto Texto
+        }} className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-2 md:mb-6 lg:text-6xl">
+            Transporte inteligente para um novo mercado
           </motion.h1>
 
           {/* Subheadline */}
@@ -105,7 +105,7 @@ const Hero = () => {
           delay: 0.4,
           ease: [0.22, 1, 0.36, 1]
         }} className="text-lg md:text-xl max-w-2xl mx-auto mb-10 text-secondary-foreground">
-            Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto Texto
+            Unimos tecnologia, pontualidade e segurança para transformar o transporte da sua carga.
           </motion.p>
 
           {/* CTA Buttons */}
