@@ -120,43 +120,14 @@ html {
 }
 
 @layer utilities {
-  /* 
-   * Mobile Viewport Stability Fix
-   * -----------------------------
-   * Problema: Em mobile, a barra de endereços some/aparece durante scroll,
-   * causando recálculo de 100vh e layout shift.
-   * 
-   * Solução: Combinação de CSS moderno (svh) + variáveis JS como fallback
-   */
-
-  /* Altura estável - usa variável JS quando disponível, svh como fallback */
   .h-screen-stable {
-    height: 100vh; /* fallback para browsers antigos */
-    height: 100svh; /* small viewport - altura mínima constante */
-    height: var(--vh-stable, 100svh); /* variável JS para máxima compatibilidade */
+    height: 100vh;
+    height: 100svh;
   }
 
   .min-h-screen-stable {
     min-height: 100vh;
     min-height: 100svh;
-    min-height: var(--vh-stable, 100svh);
-  }
-
-  /* Para casos que precisam do viewport dinâmico */
-  .h-screen-dynamic {
-    height: 100vh;
-    height: 100dvh;
-  }
-  
-  /* Altura fixa baseada em variável JS - não muda com a barra do navegador */
-  .h-viewport-fixed {
-    height: var(--vh-stable, 100svh);
-  }
-
-  /* Previne layout shift em containers de scroll horizontal */
-  .no-layout-shift {
-    overflow-anchor: none;
-    overscroll-behavior: contain;
   }
 
   .animate-fade-up {

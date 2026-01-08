@@ -3,7 +3,7 @@ import { motion, useInView, animate } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import logoHero from "@/assets/logo-hero.png";
 import MagneticButton from "./MagneticButton";
-import { useStableViewport } from "@/hooks/use-stable-viewport";
+
 const AnimatedNumber = ({
   value,
   prefix = "",
@@ -35,9 +35,9 @@ const AnimatedNumber = ({
       {suffix}
     </span>;
 };
+
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
-  const { height: stableHeight, isMobile } = useStableViewport();
 
   useEffect(() => {
     let ticking = false;
@@ -55,14 +55,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <section 
-      className="relative overflow-hidden"
-      style={{
-        // Usa altura estável para evitar layout shift em mobile
-        height: isMobile ? `${stableHeight}px` : undefined,
-        minHeight: isMobile ? undefined : '100svh',
-      }}
-    >
+    <section className="relative min-h-screen overflow-hidden">
       {/* Video Background */}
       <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
         <source src="/videos/hero-bg.mp4" type="video/mp4" />
