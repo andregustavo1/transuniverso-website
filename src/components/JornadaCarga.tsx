@@ -80,7 +80,7 @@ const JornadaCarga = () => {
     let lastActiveIndex = 0;
 
     const ctx = gsap.context(() => {
-      gsap.to(cards, {
+      const scrollTriggerInstance = gsap.to(cards, {
         x: () => -getScrollAmount(),
         ease: "none",
         scrollTrigger: {
@@ -112,6 +112,37 @@ const JornadaCarga = () => {
           },
         },
       });
+
+      // Mobile: detectar mudança de viewport e fazer refresh
+      if (isMobile) {
+        let lastHeight = window.innerHeight;
+        let refreshTimeout: number | null = null;
+        
+        const handleResize = () => {
+          const currentHeight = window.innerHeight;
+          const heightDiff = Math.abs(currentHeight - lastHeight);
+          
+          // Se a diferença for maior que 100px (barra do navegador), fazer refresh
+          if (heightDiff > 100) {
+            // Debounce para evitar múltiplos refreshes
+            if (refreshTimeout) clearTimeout(refreshTimeout);
+            refreshTimeout = window.setTimeout(() => {
+              lastHeight = currentHeight;
+              ScrollTrigger.refresh();
+            }, 200);
+          }
+        };
+
+        window.addEventListener('resize', handleResize, { passive: true });
+        
+        // Também detectar orientationchange
+        window.addEventListener('orientationchange', () => {
+          setTimeout(() => {
+            lastHeight = window.innerHeight;
+            ScrollTrigger.refresh();
+          }, 300);
+        });
+      }
     }, section);
 
     return () => ctx.revert();
