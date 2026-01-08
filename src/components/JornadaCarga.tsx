@@ -75,7 +75,7 @@ const JornadaCarga = () => {
     const container = containerRef.current;
     const cards = cardsRef.current;
 
-    if (!section || !container || !cards) return;
+    if (!section || !container || !cards || !stableHeight) return;
 
     // Use actual DOM measurements for precise scrolling.
     // Horizontal scroll should END exactly when the last card is fully in view.
@@ -96,6 +96,7 @@ const JornadaCarga = () => {
           scrub: isMobile ? 1 : true, // Mobile: valor maior = menos recálculos, mais suave
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          refreshPriority: -1, // Processa por último para evitar conflitos
           onUpdate: (self) => {
             const progress = self.progress;
             const cardIndex = Math.min(
@@ -119,7 +120,7 @@ const JornadaCarga = () => {
     }, section);
 
     return () => ctx.revert();
-  }, [isMobile]);
+  }, [isMobile, stableHeight]);
 
 
   
