@@ -159,40 +159,97 @@ const JornadaCarga = () => {
                   : 'w-screen h-screen-stable'
               }`}
             >
-              {/* Decorative background element - REMOVIDO no mobile para performance */}
+              {/* Decorative background element - z-0 (mais atrás) */}
+              <div 
+                className={`absolute pointer-events-none ${
+                  isMobile 
+                    ? 'right-4 top-1/4 w-48 h-48 opacity-15' 
+                    : 'right-[10%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] opacity-20'
+                }`}
+                style={{ zIndex: 0 }}
+              >
+                <div 
+                  className="w-full h-full rounded-full"
+                  style={{
+                    background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
+                    filter: isMobile ? 'blur(40px)' : 'blur(60px)',
+                  }}
+                />
+              </div>
+
+              {/* Image placeholder - z-1 (meio) - APENAS DESKTOP */}
               {!isMobile && (
-                <div className="absolute right-[10%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] opacity-20 pointer-events-none">
+                <div 
+                  className="absolute pointer-events-none right-[12%] top-1/2 -translate-y-1/2 w-[30vw] h-[30vw] max-w-[500px] max-h-[500px]"
+                  style={{ zIndex: 1 }}
+                >
+                  {/* Placeholder - substitua pelo componente de imagem real */}
                   <div 
-                    className="w-full h-full rounded-full"
-                    style={{
-                      background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
-                      filter: 'blur(60px)',
-                    }}
-                  />
+                    className="w-full h-full rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm hover:border-white/40 transition-colors"
+                  >
+                    <div className="text-center text-white/40">
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="mx-auto mb-2 w-16 h-16"
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="block text-sm">
+                        Imagem {index + 1}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               )}
 
-              {/* Content */}
+              {/* Content - z-10 (frente) */}
               <div className={`relative z-10 w-full overflow-hidden ${isMobile ? 'px-5 py-8' : 'px-8 md:px-16 lg:px-24'}`}>
                 {/* Removido motion.div no mobile - usar CSS simples */}
                 {isMobile ? (
-                  <div className="w-full">
-                    <span className="tracking-[0.2em] text-[#ff0000]/80 font-medium mb-3 block text-xs">
-                      {card.title}
-                    </span>
+                  <div className="w-full flex flex-col items-center">
+                    <div className="w-full">
+                      <span className="tracking-[0.2em] text-[#ff0000]/80 font-medium mb-3 block text-xs">
+                        {card.title}
+                      </span>
 
-                    <h2 className="font-extrabold text-white mb-4 leading-[1.1] tracking-tight text-2xl">
-                      {card.subtitle}
-                    </h2>
+                      <h2 className="font-extrabold text-white mb-4 leading-[1.1] tracking-tight text-2xl">
+                        {card.subtitle}
+                      </h2>
 
-                    <p className="text-gray-400 leading-relaxed tracking-wide text-sm w-full break-words">
-                      {card.description}
-                    </p>
+                      <p className="text-gray-400 leading-relaxed tracking-wide text-sm w-full break-words">
+                        {card.description}
+                      </p>
 
-                    <div 
-                      className="mt-6 h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent"
-                      style={{ width: '40%' }}
-                    />
+                      <div 
+                        className="mt-6 h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent"
+                        style={{ width: '40%' }}
+                      />
+                    </div>
+
+                    {/* Image placeholder - MOBILE - centralizado abaixo do texto */}
+                    <div className="mt-8 w-44 h-44">
+                      <div 
+                        className="w-full h-full rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5"
+                      >
+                        <div className="text-center text-white/40">
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            className="mx-auto mb-2 w-10 h-10"
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span className="block text-xs">
+                            Imagem {index + 1}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <motion.div
