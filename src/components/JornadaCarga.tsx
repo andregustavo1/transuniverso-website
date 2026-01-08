@@ -65,6 +65,24 @@ const JornadaCarga = () => {
   const cardsRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const isMobile = useIsMobile();
+  
+  // Altura fixa calculada uma vez (viewport máxima sem barras do navegador)
+  const [fixedHeight, setFixedHeight] = useState<number | null>(null);
+  
+  // Controlar visibilidade do progress indicator
+  const [isInView, setIsInView] = useState(false);
+
+  // Calcular altura fixa apenas uma vez no mount
+  useEffect(() => {
+    if (isMobile && fixedHeight === null) {
+      // Usar screen.availHeight para pegar altura máxima disponível (sem barras do sistema)
+      // ou window.innerHeight se visualViewport não estiver disponível
+      const maxHeight = window.screen?.availHeight || window.innerHeight;
+      // Pegar o menor entre availHeight e innerHeight atual (para não exceder)
+      const safeHeight = Math.max(maxHeight, window.innerHeight);
+      setFixedHeight(safeHeight);
+    }
+  }, [isMobile, fixedHeight]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -72,6 +90,9 @@ const JornadaCarga = () => {
     const cards = cardsRef.current;
 
     if (!section || !container || !cards) return;
+    
+    // No mobile, esperar a altura fixa ser calculada
+    if (isMobile && fixedHeight === null) return;
 
     // Use actual DOM measurements for precise scrolling.
     // Horizontal scroll should END exactly when the last card is fully in view.
@@ -80,7 +101,7 @@ const JornadaCarga = () => {
     let lastActiveIndex = 0;
 
     const ctx = gsap.context(() => {
-      const scrollTriggerInstance = gsap.to(cards, {
+      gsap.to(cards, {
         x: () => -getScrollAmount(),
         ease: "none",
         scrollTrigger: {
@@ -89,9 +110,13 @@ const JornadaCarga = () => {
           end: () => `+=${getScrollAmount()}`,
           pin: true,
           pinSpacing: true,
-          scrub: isMobile ? 1 : true, // Mobile: valor maior = menos recálculos, mais suave
+          scrub: isMobile ? 1 : true,
           anticipatePin: 1,
-          invalidateOnRefresh: true,
+          invalidateOnRefresh: !isMobile, // Desabilitar refresh automático no mobile
+          onEnter: () => setIsInView(true),
+          onLeave: () => setIsInView(false),
+          onEnterBack: () => setIsInView(true),
+          onLeaveBack: () => setIsInView(false),
           onUpdate: (self) => {
             const progress = self.progress;
             const cardIndex = Math.min(
@@ -112,41 +137,10 @@ const JornadaCarga = () => {
           },
         },
       });
-
-      // Mobile: detectar mudança de viewport e fazer refresh
-      if (isMobile) {
-        let lastHeight = window.innerHeight;
-        let refreshTimeout: number | null = null;
-        
-        const handleResize = () => {
-          const currentHeight = window.innerHeight;
-          const heightDiff = Math.abs(currentHeight - lastHeight);
-          
-          // Se a diferença for maior que 100px (barra do navegador), fazer refresh
-          if (heightDiff > 100) {
-            // Debounce para evitar múltiplos refreshes
-            if (refreshTimeout) clearTimeout(refreshTimeout);
-            refreshTimeout = window.setTimeout(() => {
-              lastHeight = currentHeight;
-              ScrollTrigger.refresh();
-            }, 200);
-          }
-        };
-
-        window.addEventListener('resize', handleResize, { passive: true });
-        
-        // Também detectar orientationchange
-        window.addEventListener('orientationchange', () => {
-          setTimeout(() => {
-            lastHeight = window.innerHeight;
-            ScrollTrigger.refresh();
-          }, 300);
-        });
-      }
     }, section);
 
     return () => ctx.revert();
-  }, [isMobile]);
+  }, [isMobile, fixedHeight]);
 
 
   
@@ -167,17 +161,20 @@ const JornadaCarga = () => {
 
       <div 
         ref={containerRef} 
-        className="h-screen-stable overflow-hidden"
-        style={{ touchAction: 'pan-y pinch-zoom' }}
+        className={isMobile ? 'overflow-hidden' : 'h-screen-stable overflow-hidden'}
+        style={{ 
+          touchAction: 'pan-y pinch-zoom',
+          height: isMobile && fixedHeight ? `${fixedHeight}px` : undefined,
+        }}
       >
         <div 
           ref={cardsRef}
           className={`flex h-full ${isMobile ? 'gap-0 pl-4' : ''}`}
           style={{ 
             width: isMobile ? 'fit-content' : `${journeyCards.length * 100}vw`,
-            willChange: isMobile ? 'auto' : 'transform', // Mobile: desabilitar para economizar memória GPU
+            willChange: isMobile ? 'auto' : 'transform',
             backfaceVisibility: 'hidden',
-            transform: 'translateZ(0)', // Força layer de composição
+            transform: 'translateZ(0)',
           }}
         >
 
@@ -186,9 +183,12 @@ const JornadaCarga = () => {
               key={card.id}
               className={`relative flex-shrink-0 flex items-center ${
                 isMobile 
-                  ? 'w-[93vw] h-screen-stable rounded-2xl overflow-hidden' 
+                  ? 'w-[93vw] rounded-2xl overflow-hidden' 
                   : 'w-screen h-screen-stable'
               }`}
+              style={{
+                height: isMobile && fixedHeight ? `${fixedHeight}px` : undefined,
+              }}
             >
               {/* Decorative background element - z-0 (mais atrás) */}
               <div 
@@ -319,20 +319,41 @@ const JornadaCarga = () => {
           {isMobile && <div className="w-4 flex-shrink-0" />}
         </div>
 
-        {/* Progress indicator - moved inside container so it stays visible during pinned scroll */}
-        <div className={`absolute ${isMobile ? 'bottom-8 right-5' : 'bottom-12 left-8 md:left-16 lg:left-24'} flex items-center gap-2 md:gap-3 z-50 pointer-events-none`}>
+        {/* Progress indicator desktop - inside container */}
+        {!isMobile && (
+          <div className="absolute bottom-12 left-8 md:left-16 lg:left-24 flex items-center gap-3 z-50 pointer-events-none">
+            {journeyCards.map((_, i) => (
+              <div
+                key={i}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === activeIndex 
+                    ? 'bg-[#ff0000] w-8' 
+                    : 'bg-gray-600 w-2'
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Progress indicator mobile - posição fixa na tela, apenas quando seção está visível */}
+      {isMobile && isInView && (
+        <div 
+          className="fixed left-1/2 -translate-x-1/2 flex items-center gap-2 z-50 pointer-events-none"
+          style={{ bottom: '24px' }}
+        >
           {journeyCards.map((_, i) => (
             <div
               key={i}
               className={`h-2 rounded-full transition-all duration-300 ${
                 i === activeIndex 
-                  ? 'bg-[#ff0000] w-6 md:w-8' 
+                  ? 'bg-[#ff0000] w-6' 
                   : 'bg-gray-600 w-2'
               }`}
             />
           ))}
         </div>
-      </div>
+      )}
     </section>
   );
 };
