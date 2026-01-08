@@ -59,17 +59,22 @@ const JornadaCarga = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const isMobile = useIsMobile();
 
-  // DESKTOP: ScrollTrigger com pin (funciona bem)
+  // ScrollTrigger para AMBOS mobile e desktop
   useEffect(() => {
-    if (isMobile) return; // Não usa ScrollTrigger no mobile
-
     const section = sectionRef.current;
     const container = containerRef.current;
     const cards = cardsRef.current;
 
     if (!section || !container || !cards) return;
 
-    const getScrollAmount = () => Math.max(0, cards.scrollWidth - window.innerWidth);
+    // Calcula o quanto precisa scrollar horizontalmente
+    const getScrollAmount = () => {
+      if (isMobile) {
+        // Mobile: largura total dos cards menos a largura da tela
+        return Math.max(0, cards.scrollWidth - window.innerWidth);
+      }
+      return Math.max(0, cards.scrollWidth - window.innerWidth);
+    };
 
     let lastActiveIndex = 0;
 
@@ -83,7 +88,7 @@ const JornadaCarga = () => {
           end: () => `+=${getScrollAmount()}`,
           pin: true,
           pinSpacing: true,
-          scrub: 0.8,
+          scrub: isMobile ? 1 : 0.8, // Mobile: scrub um pouco mais responsivo
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
@@ -106,101 +111,7 @@ const JornadaCarga = () => {
     return () => ctx.revert();
   }, [isMobile]);
 
-  // MOBILE: Scroll horizontal nativo com snap
-  if (isMobile) {
-    return (
-      <section 
-        ref={sectionRef}
-        className="relative bg-[#0a0a0f] py-12"
-      >
-        <div className="px-4 mb-6">
-          <span className="text-[10px] tracking-[0.3em] text-gray-500 uppercase">
-            Jornada da Carga
-          </span>
-        </div>
-
-        {/* Container com scroll horizontal nativo */}
-        <div 
-          className="flex gap-4 overflow-x-auto px-4 pb-4 snap-x snap-mandatory"
-          style={{
-            scrollbarWidth: 'none',
-            WebkitOverflowScrolling: 'touch',
-          }}
-          onScroll={(e) => {
-            const container = e.currentTarget;
-            const scrollLeft = container.scrollLeft;
-            const cardWidth = container.offsetWidth * 0.85;
-            const newIndex = Math.round(scrollLeft / cardWidth);
-            if (newIndex !== activeIndex && newIndex >= 0 && newIndex < journeyCards.length) {
-              setActiveIndex(newIndex);
-            }
-          }}
-        >
-          {journeyCards.map((card, index) => (
-            <div
-              key={card.id}
-              className="flex-shrink-0 w-[85vw] snap-center rounded-2xl p-6"
-              style={{
-                backgroundColor: card.bgColor,
-              }}
-            >
-              <span className="tracking-[0.2em] text-[#ff0000]/80 font-medium mb-3 block text-xs">
-                {card.title}
-              </span>
-
-              <h2 className="font-extrabold text-white mb-4 leading-[1.1] tracking-tight text-2xl">
-                {card.subtitle}
-              </h2>
-
-              <p className="text-gray-400 leading-relaxed tracking-wide text-sm">
-                {card.description}
-              </p>
-
-              <div 
-                className="mt-6 h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent w-[40%]"
-              />
-
-              {/* Image placeholder */}
-              <div className="mt-6 flex justify-center">
-                <div className="w-40 h-40 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5">
-                  <div className="text-center text-white/40">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className="mx-auto mb-2 w-10 h-10"
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span className="block text-xs">
-                      Imagem {index + 1}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Progress indicator */}
-        <div className="flex justify-center gap-2 mt-4">
-          {journeyCards.map((_, i) => (
-            <div
-              key={i}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === activeIndex 
-                  ? 'bg-[#ff0000] w-6' 
-                  : 'bg-gray-600 w-2'
-              }`}
-            />
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  // DESKTOP: Layout original com ScrollTrigger
+  // Layout unificado para mobile e desktop
   return (
     <section 
       ref={sectionRef}
@@ -210,8 +121,10 @@ const JornadaCarga = () => {
         transition: 'background-color 0.5s ease-out',
       }}
     >
-      <div className="absolute top-8 left-8 z-20">
-        <span className="text-xs tracking-[0.3em] text-gray-500 uppercase">Jornada da Carga</span>
+      <div className={`absolute ${isMobile ? 'top-4 left-4' : 'top-8 left-8'} z-20`}>
+        <span className={`${isMobile ? 'text-[10px]' : 'text-xs'} tracking-[0.3em] text-gray-500 uppercase`}>
+          Jornada da Carga
+        </span>
       </div>
 
       <div 
@@ -222,90 +135,142 @@ const JornadaCarga = () => {
           ref={cardsRef}
           className="flex h-full"
           style={{ 
-            width: `${journeyCards.length * 100}vw`,
+            width: isMobile 
+              ? `${journeyCards.length * 90}vw` // Mobile: cards de 90vw
+              : `${journeyCards.length * 100}vw`, // Desktop: cards de 100vw
           }}
         >
           {journeyCards.map((card, index) => (
             <div
               key={card.id}
-              className="relative flex-shrink-0 flex items-center w-screen h-screen"
+              className={`relative flex-shrink-0 flex items-center h-screen ${
+                isMobile ? 'w-[90vw]' : 'w-screen'
+              }`}
             >
               {/* Decorative background */}
               <div 
-                className="absolute pointer-events-none right-[10%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] opacity-20"
+                className={`absolute pointer-events-none ${
+                  isMobile 
+                    ? 'right-4 bottom-32 w-48 h-48 opacity-10' 
+                    : 'right-[10%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] opacity-20'
+                }`}
               >
                 <div 
                   className="w-full h-full rounded-full"
                   style={{
                     background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
-                    filter: 'blur(60px)',
+                    filter: isMobile ? 'blur(40px)' : 'blur(60px)',
                   }}
                 />
               </div>
 
-              {/* Image placeholder */}
-              <div 
-                className="absolute pointer-events-none right-[12%] top-1/2 -translate-y-1/2 w-[30vw] h-[30vw] max-w-[500px] max-h-[500px]"
-                style={{ zIndex: 1 }}
-              >
-                <div className="w-full h-full rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm">
-                  <div className="text-center text-white/40">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className="mx-auto mb-2 w-16 h-16"
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span className="block text-sm">Imagem {index + 1}</span>
+              {/* Image placeholder - Desktop only */}
+              {!isMobile && (
+                <div 
+                  className="absolute pointer-events-none right-[12%] top-1/2 -translate-y-1/2 w-[30vw] h-[30vw] max-w-[500px] max-h-[500px]"
+                  style={{ zIndex: 1 }}
+                >
+                  <div className="w-full h-full rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm">
+                    <div className="text-center text-white/40">
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="mx-auto mb-2 w-16 h-16"
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="block text-sm">Imagem {index + 1}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Content */}
-              <div className="relative z-10 px-8 md:px-16 lg:px-24">
-                <motion.div
-                  className="max-w-[40%]"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <span className="tracking-[0.2em] text-[#ff0000] font-medium mb-4 block text-sm">
-                    {card.title}
-                  </span>
+              <div className={`relative z-10 ${isMobile ? 'px-5' : 'px-8 md:px-16 lg:px-24'}`}>
+                {isMobile ? (
+                  // Mobile: Layout simplificado sem animações pesadas
+                  <div className="flex flex-col">
+                    <span className="tracking-[0.2em] text-[#ff0000]/80 font-medium mb-2 block text-xs">
+                      {card.title}
+                    </span>
 
-                  <h2 className="font-extrabold text-white mb-8 leading-[1.1] tracking-tight text-4xl md:text-5xl lg:text-6xl">
-                    {card.subtitle}
-                  </h2>
+                    <h2 className="font-extrabold text-white mb-3 leading-[1.1] tracking-tight text-2xl">
+                      {card.subtitle}
+                    </h2>
 
-                  <p className="text-gray-400 leading-relaxed tracking-wide text-lg md:text-xl max-w-lg">
-                    {card.description}
-                  </p>
+                    <p className="text-gray-400 leading-relaxed tracking-wide text-sm mb-4">
+                      {card.description}
+                    </p>
 
+                    <div className="h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent w-[40%] mb-6" />
+
+                    {/* Image placeholder - Mobile */}
+                    <div className="flex justify-center">
+                      <div className="w-36 h-36 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5">
+                        <div className="text-center text-white/40">
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            className="mx-auto mb-1 w-8 h-8"
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span className="block text-[10px]">Imagem {index + 1}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Desktop: Layout com animações
                   <motion.div
-                    className="mt-12 h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: '60%' }}
+                    className="max-w-[40%]"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  />
-                </motion.div>
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <span className="tracking-[0.2em] text-[#ff0000] font-medium mb-4 block text-sm">
+                      {card.title}
+                    </span>
+
+                    <h2 className="font-extrabold text-white mb-8 leading-[1.1] tracking-tight text-4xl md:text-5xl lg:text-6xl">
+                      {card.subtitle}
+                    </h2>
+
+                    <p className="text-gray-400 leading-relaxed tracking-wide text-lg md:text-xl max-w-lg">
+                      {card.description}
+                    </p>
+
+                    <motion.div
+                      className="mt-12 h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: '60%' }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                    />
+                  </motion.div>
+                )}
               </div>
             </div>
           ))}
         </div>
 
         {/* Progress indicator */}
-        <div className="absolute bottom-12 left-8 md:left-16 lg:left-24 flex items-center gap-3 z-50">
+        <div className={`absolute ${
+          isMobile 
+            ? 'bottom-8 left-1/2 -translate-x-1/2' 
+            : 'bottom-12 left-8 md:left-16 lg:left-24'
+        } flex items-center gap-2 md:gap-3 z-50`}>
           {journeyCards.map((_, i) => (
             <div
               key={i}
               className={`h-2 rounded-full transition-all duration-300 ${
                 i === activeIndex 
-                  ? 'bg-[#ff0000] w-8' 
+                  ? `bg-[#ff0000] ${isMobile ? 'w-6' : 'w-8'}` 
                   : 'bg-gray-600 w-2'
               }`}
             />
