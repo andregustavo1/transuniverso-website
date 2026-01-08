@@ -64,7 +64,6 @@ const JornadaCarga = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const [currentBgColor, setCurrentBgColor] = useState(journeyCards[0].bgColor);
   const [activeIndex, setActiveIndex] = useState(0);
   const isMobile = useIsMobile();
 
@@ -79,6 +78,8 @@ const JornadaCarga = () => {
     // Horizontal scroll should END exactly when the last card is fully in view.
     const getScrollAmount = () => Math.max(0, cards.scrollWidth - window.innerWidth);
 
+    let lastActiveIndex = 0;
+
     const ctx = gsap.context(() => {
       gsap.to(cards, {
         x: () => -getScrollAmount(),
@@ -92,24 +93,27 @@ const JornadaCarga = () => {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           refreshPriority: 1,
-            onUpdate: (self) => {
-              const progress = self.progress;
-              const cardIndex = Math.min(
-                Math.floor(progress * journeyCards.length),
-                journeyCards.length - 1
-              );
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const cardIndex = Math.min(
+              Math.floor(progress * journeyCards.length),
+              journeyCards.length - 1
+            );
 
+            // Apenas atualiza state quando realmente muda de card (reduz re-renders)
+            if (cardIndex !== lastActiveIndex) {
               setActiveIndex(cardIndex);
+              lastActiveIndex = cardIndex;
 
-              const nextIndex = Math.min(cardIndex + 1, journeyCards.length - 1);
-              const localProgress = (progress * journeyCards.length) % 1;
-
-              const currentColor = journeyCards[cardIndex].bgColor;
-              const nextColor = journeyCards[nextIndex].bgColor;
-
-              const interpolatedColor = interpolateColor(currentColor, nextColor, localProgress);
-              setCurrentBgColor(interpolatedColor);
-            },
+              // Anima a cor de fundo com GSAP (evita múltiplos setState por frame)
+              gsap.to(section, {
+                backgroundColor: journeyCards[cardIndex].bgColor,
+                duration: 0.6,
+                ease: "power2.inOut",
+                overwrite: "auto",
+              });
+            }
+          },
         },
       });
     }, section);
@@ -118,32 +122,14 @@ const JornadaCarga = () => {
   }, [isMobile]);
 
 
-  const interpolateColor = (color1: string, color2: string, factor: number): string => {
-    const hex1 = color1.replace('#', '');
-    const hex2 = color2.replace('#', '');
-    
-    const r1 = parseInt(hex1.substring(0, 2), 16);
-    const g1 = parseInt(hex1.substring(2, 4), 16);
-    const b1 = parseInt(hex1.substring(4, 6), 16);
-    
-    const r2 = parseInt(hex2.substring(0, 2), 16);
-    const g2 = parseInt(hex2.substring(2, 4), 16);
-    const b2 = parseInt(hex2.substring(4, 6), 16);
-    
-    const r = Math.round(r1 + (r2 - r1) * factor);
-    const g = Math.round(g1 + (g2 - g1) * factor);
-    const b = Math.round(b1 + (b2 - b1) * factor);
-    
-    return `rgb(${r}, ${g}, ${b})`;
-  };
+  
 
   return (
     <section 
       ref={sectionRef}
       className="relative"
       style={{ 
-        backgroundColor: currentBgColor, 
-        transition: isMobile ? 'background-color 400ms cubic-bezier(.22,1,.36,1)' : 'background-color 0.1s ease-out',
+        backgroundColor: journeyCards[0].bgColor,
         overscrollBehavior: 'none',
       }}
     >
@@ -181,13 +167,12 @@ const JornadaCarga = () => {
                   }}
                 />
                 {!isMobile && (
-                  <motion.div
-                    className="absolute inset-0 rounded-full"
+                  <div
+                    className="absolute inset-0 rounded-full animate-spin-slow"
                     style={{
                       background: `conic-gradient(from ${index * 72}deg, transparent, rgba(249,115,22,0.1), transparent)`,
+                      animationDuration: '20s',
                     }}
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   />
                 )}
               </div>
