@@ -119,6 +119,23 @@ html {
 }
 
 @layer utilities {
+  /* Mobile viewport fix - usa svh (small viewport height) que não muda com a barra do navegador */
+  .h-screen-stable {
+    height: 100vh; /* fallback */
+    height: 100svh; /* small viewport - sempre o menor tamanho */
+  }
+
+  .min-h-screen-stable {
+    min-height: 100vh; /* fallback */
+    min-height: 100svh;
+  }
+
+  /* Para casos que precisam do viewport dinâmico */
+  .h-screen-dynamic {
+    height: 100vh; /* fallback */
+    height: 100dvh; /* dynamic viewport - muda com a barra */
+  }
+
   .animate-fade-up {
     animation: fadeUp 0.8s ease-out forwards;
   }

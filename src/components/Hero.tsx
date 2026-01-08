@@ -52,7 +52,7 @@ const Hero = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return <section className="relative min-h-screen overflow-hidden">
+  return <section className="relative min-h-screen-stable overflow-hidden">
       {/* Video Background */}
       <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
         <source src="/videos/hero-bg.mp4" type="video/mp4" />

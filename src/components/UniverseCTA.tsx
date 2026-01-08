@@ -123,7 +123,7 @@ const UniverseCTA = () => {
   return (
     <section
       ref={containerRef}
-      className="relative w-screen h-screen overflow-hidden bg-black"
+      className="relative w-screen h-screen-stable overflow-hidden bg-black"
       style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)' }}
     >
       <canvas

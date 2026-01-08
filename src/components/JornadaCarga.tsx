@@ -136,7 +136,7 @@ const JornadaCarga = () => {
 
       <div 
         ref={containerRef} 
-        className="h-screen overflow-hidden"
+        className="h-screen-stable overflow-hidden"
         style={{ touchAction: 'pan-y pinch-zoom' }}
       >
         <div 
@@ -155,8 +155,8 @@ const JornadaCarga = () => {
               key={card.id}
               className={`relative flex-shrink-0 flex items-center ${
                 isMobile 
-                  ? 'w-[93vw] h-screen rounded-2xl overflow-hidden' 
-                  : 'w-screen h-screen'
+                  ? 'w-[93vw] h-screen-stable rounded-2xl overflow-hidden' 
+                  : 'w-screen h-screen-stable'
               }`}
             >
               {/* Decorative background element - REMOVIDO no mobile para performance */}

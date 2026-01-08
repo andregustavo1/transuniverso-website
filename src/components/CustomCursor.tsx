@@ -55,13 +55,13 @@ const CustomCursor = () => {
         Math.abs(dyDot) > threshold;
 
       if (needsUpdate) {
-        // Smooth follow for outer cursor (more lag)
-        cursorX += dxCursor * 0.15;
-        cursorY += dyCursor * 0.15;
+        // Smooth follow for outer cursor (menos delay agora)
+        cursorX += dxCursor * 0.25;
+        cursorY += dyCursor * 0.25;
 
         // Faster follow for inner dot
-        dotX += dxDot * 0.35;
-        dotY += dyDot * 0.35;
+        dotX += dxDot * 0.4;
+        dotY += dyDot * 0.4;
 
         // Usar transform direto (mais rápido que gsap.set)
         cursor.style.transform = `translate(${cursorX - 20}px, ${cursorY - 20}px)`;
