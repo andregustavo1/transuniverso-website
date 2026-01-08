@@ -6,6 +6,11 @@ const CustomCursor = () => {
   const cursorDotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // CHECK MOBILE FIRST - Early return para não executar nada em mobile
+    if (typeof window !== "undefined" && "ontouchstart" in window) {
+      return;
+    }
+
     const cursor = cursorRef.current;
     const cursorDot = cursorDotRef.current;
     
@@ -15,6 +20,7 @@ const CustomCursor = () => {
     const mouse = { x: 0, y: 0 };
     const cursorPos = { x: 0, y: 0 };
     const dotPos = { x: 0, y: 0 };
+    let animationId: number | null = null;
 
     // Track mouse position
     const onMouseMove = (e: MouseEvent) => {
@@ -42,7 +48,7 @@ const CustomCursor = () => {
         y: dotPos.y,
       });
 
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     };
 
     // Handle hover states
@@ -72,7 +78,7 @@ const CustomCursor = () => {
 
     // Add event listeners
     window.addEventListener("mousemove", onMouseMove);
-    animate();
+    animationId = requestAnimationFrame(animate);
 
     // Add hover listeners to interactive elements
     const interactiveElements = document.querySelectorAll(
@@ -88,6 +94,10 @@ const CustomCursor = () => {
     document.body.style.cursor = "none";
 
     return () => {
+      // Cancel animation frame to prevent memory leak
+      if (animationId !== null) {
+        cancelAnimationFrame(animationId);
+      }
       window.removeEventListener("mousemove", onMouseMove);
       document.body.style.cursor = "auto";
       interactiveElements.forEach((el) => {
@@ -96,11 +106,6 @@ const CustomCursor = () => {
       });
     };
   }, []);
-
-  // Hide on mobile/touch devices
-  if (typeof window !== "undefined" && "ontouchstart" in window) {
-    return null;
-  }
 
   return (
     <>
