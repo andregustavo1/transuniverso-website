@@ -64,7 +64,15 @@ const JornadaCarga = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mobileHeight, setMobileHeight] = useState<number | null>(null);
   const isMobile = useIsMobile();
+
+  // Captura a altura da tela UMA VEZ no mobile para evitar resize quando header/footer do navegador encolhem
+  useEffect(() => {
+    if (isMobile && mobileHeight === null) {
+      setMobileHeight(window.innerHeight);
+    }
+  }, [isMobile, mobileHeight]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -136,8 +144,11 @@ const JornadaCarga = () => {
 
       <div 
         ref={containerRef} 
-        className="h-screen-stable overflow-hidden"
-        style={{ touchAction: 'pan-y pinch-zoom' }}
+        className={isMobile ? 'overflow-hidden' : 'h-screen-stable overflow-hidden'}
+        style={{ 
+          touchAction: 'pan-y pinch-zoom',
+          height: isMobile && mobileHeight ? `${mobileHeight}px` : undefined,
+        }}
       >
         <div 
           ref={cardsRef}
@@ -155,9 +166,12 @@ const JornadaCarga = () => {
               key={card.id}
               className={`relative flex-shrink-0 flex items-center ${
                 isMobile 
-                  ? 'w-[93vw] h-screen-stable rounded-2xl overflow-hidden' 
+                  ? 'w-[93vw] rounded-2xl overflow-hidden' 
                   : 'w-screen h-screen-stable'
               }`}
+              style={{
+                height: isMobile && mobileHeight ? `${mobileHeight}px` : undefined,
+              }}
             >
               {/* Decorative background element - z-0 (mais atrás) */}
               <div 
