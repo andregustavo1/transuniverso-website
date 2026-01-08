@@ -74,8 +74,8 @@ const Hero = () => {
         }} transition={{
           duration: 0.8,
           ease: [0.22, 1, 0.36, 1]
-        }} className="mt-28 mb-2 md:mb-4 md:mt-2">
-            <img src={logoHero} alt="Transuniverso" className="h-16 md:h-20 w-auto mx-auto" />
+        }} className="mt-20 mb-4 md:mb-6 ">
+            <img src={logoHero} alt="Transuniverso" className="h-16 md:h-24 w-auto mx-auto" />
           </motion.div>
 
           {/* Headline */}

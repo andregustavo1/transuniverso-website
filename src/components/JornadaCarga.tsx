@@ -177,7 +177,7 @@ const JornadaCarga = () => {
                 {/* Removido motion.div no mobile - usar CSS simples */}
                 {isMobile ? (
                   <div className="w-full">
-                    <span className="tracking-[0.2em] text-red-600/80 font-medium mb-3 block text-xs">
+                    <span className="tracking-[0.2em] text-[#ff0000]/80 font-medium mb-3 block text-xs">
                       {card.title}
                     </span>
 
@@ -190,7 +190,7 @@ const JornadaCarga = () => {
                     </p>
 
                     <div 
-                      className="mt-6 h-[2px] bg-gradient-to-r from-red-600 to-transparent"
+                      className="mt-6 h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent"
                       style={{ width: '40%' }}
                     />
                   </div>
@@ -202,11 +202,11 @@ const JornadaCarga = () => {
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <span className="tracking-[0.2em] text-red-600/80 font-medium mb-3 md:mb-4 block text-sm">
+                    <span className="tracking-[0.2em] text-[#ff0000] font-medium mb-3 md:mb-4 block text-sm">
                       {card.title}
                     </span>
 
-                    <h2 className="font-extrabold text-white mb-4 md:mb-8 leading-[1.1] tracking-tight text-4xl md:text-5xl lg:text-7xl">
+                    <h2 className="font-extrabold text-white mb-4 md:mb-8 leading-[1.1] tracking-tight text-4xl md:text-5xl lg:text-6xl">
                       {card.subtitle}
                     </h2>
 
@@ -215,7 +215,7 @@ const JornadaCarga = () => {
                     </p>
 
                     <motion.div
-                      className="mt-6 md:mt-12 h-[2px] bg-gradient-to-r from-red-600 to-transparent"
+                      className="mt-6 md:mt-12 h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent"
                       initial={{ width: 0 }}
                       whileInView={{ width: '60%' }}
                       viewport={{ once: true, amount: 0.3 }}
@@ -238,7 +238,7 @@ const JornadaCarga = () => {
               key={i}
               className={`h-2 rounded-full transition-all duration-300 ${
                 i === activeIndex 
-                  ? 'bg-red-600 w-6 md:w-8' 
+                  ? 'bg-[#ff0000] w-6 md:w-8' 
                   : 'bg-gray-600 w-2'
               }`}
             />
