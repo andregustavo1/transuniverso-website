@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useStableViewport } from '@/hooks/use-stable-viewport';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -64,15 +65,10 @@ const JornadaCarga = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [mobileHeight, setMobileHeight] = useState<number | null>(null);
   const isMobile = useIsMobile();
-
-  // Captura a altura da tela UMA VEZ no mobile para evitar resize quando header/footer do navegador encolhem
-  useEffect(() => {
-    if (isMobile && mobileHeight === null) {
-      setMobileHeight(window.innerHeight);
-    }
-  }, [isMobile, mobileHeight]);
+  
+  // Hook que captura a altura da viewport UMA VEZ e mantém estável
+  const { height: stableHeight } = useStableViewport();
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -144,10 +140,10 @@ const JornadaCarga = () => {
 
       <div 
         ref={containerRef} 
-        className={isMobile ? 'overflow-hidden' : 'h-screen-stable overflow-hidden'}
+        className={isMobile ? 'overflow-hidden no-layout-shift' : 'h-screen-stable overflow-hidden'}
         style={{ 
           touchAction: 'pan-y pinch-zoom',
-          height: isMobile && mobileHeight ? `${mobileHeight}px` : undefined,
+          height: isMobile ? `${stableHeight}px` : undefined,
         }}
       >
         <div 
@@ -170,7 +166,7 @@ const JornadaCarga = () => {
                   : 'w-screen h-screen-stable'
               }`}
               style={{
-                height: isMobile && mobileHeight ? `${mobileHeight}px` : undefined,
+                height: isMobile ? `${stableHeight}px` : undefined,
               }}
             >
               {/* Decorative background element - z-0 (mais atrás) */}

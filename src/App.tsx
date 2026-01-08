@@ -7,13 +7,22 @@ import SmoothScrollProvider from "./components/SmoothScrollProvider";
 import CustomCursor from "./components/CustomCursor";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import { useStableViewport } from "@/hooks/use-stable-viewport";
 
 const queryClient = new QueryClient();
+
+// Componente que inicializa as variáveis CSS de viewport globalmente
+const ViewportProvider = ({ children }: { children: React.ReactNode }) => {
+  // Este hook define as variáveis CSS --vh-stable, --vw-stable no document root
+  useStableViewport();
+  return <>{children}</>;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <SmoothScrollProvider>
+      <ViewportProvider>
+        <SmoothScrollProvider>
         <CustomCursor />
         <Toaster />
         <Sonner />
@@ -24,7 +33,8 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
-      </SmoothScrollProvider>
+        </SmoothScrollProvider>
+      </ViewportProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
