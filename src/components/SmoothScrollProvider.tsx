@@ -15,9 +15,14 @@ const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Renderiza apenas no desktop, permitindo scroll nativo no mobile
+  if (isMobile) {
+    return <>{children}</>;
+  }
+
   return (
     <ReactLenis
-      root={!isMobile}
+      root={true}
       options={{
         lerp: 0.1,
         duration: 1.2,
