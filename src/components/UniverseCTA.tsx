@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 // Interface simplificada - removida física complexa
@@ -17,6 +17,17 @@ const UniverseCTA = () => {
   const animationRef = useRef<number>();
   const isMobileRef = useRef(false);
   const dimensionsRef = useRef({ width: 0, height: 0 });
+  
+  // Estado para altura fixa no mobile (evita jump)
+  const [viewportHeight, setViewportHeight] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Captura altura apenas uma vez no mount
+  useEffect(() => {
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+    setViewportHeight(`${window.innerHeight}px`);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -47,7 +58,7 @@ const UniverseCTA = () => {
 
     const initStars = (width: number, height: number) => {
       // MUITO menos estrelas - 30 mobile / 60 desktop
-      const starCount = isMobileRef.current ? 45 : 100;
+      const starCount = isMobileRef.current ? 60 : 120;
       starsRef.current = [];
 
       for (let i = 0; i < starCount; i++) {
@@ -99,7 +110,7 @@ const UniverseCTA = () => {
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    // Throttled resize handler
+    // Throttled resize handler - apenas no desktop
     let resizeTimeout: number;
     const handleResize = () => {
       clearTimeout(resizeTimeout);
@@ -109,10 +120,15 @@ const UniverseCTA = () => {
     resizeCanvas();
     animate();
 
-    window.addEventListener('resize', handleResize, { passive: true });
+    // No mobile, não escuta resize para evitar reset das estrelas quando barras do navegador mudam
+    if (!isMobileRef.current) {
+      window.addEventListener('resize', handleResize, { passive: true });
+    }
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      if (!isMobileRef.current) {
+        window.removeEventListener('resize', handleResize);
+      }
       clearTimeout(resizeTimeout);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
@@ -123,8 +139,15 @@ const UniverseCTA = () => {
   return (
     <section
       ref={containerRef}
-      className="relative w-screen h-screen-stable overflow-hidden bg-black"
-      style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)' }}
+      className="relative w-screen overflow-hidden bg-black flex items-center justify-center"
+      style={{ 
+        marginLeft: 'calc(-50vw + 50%)', 
+        marginRight: 'calc(-50vw + 50%)',
+        ...(isMobile 
+          ? { height: viewportHeight || '100svh' }  // Mobile: altura fixa para evitar jump
+          : { minHeight: '100vh' }                   // Desktop: min-height para permitir expansão
+        )
+      }}
     >
       <canvas
         ref={canvasRef}
@@ -132,7 +155,7 @@ const UniverseCTA = () => {
         style={{ willChange: 'transform' }}
       />
 
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-6">
+      <div className="relative z-10 flex flex-col items-center justify-center px-6">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

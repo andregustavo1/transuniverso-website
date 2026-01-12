@@ -38,6 +38,16 @@ const AnimatedNumber = ({
 
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Captura a altura inicial da viewport apenas uma vez no mount
+  // Isso evita o "jump" quando as barras do navegador mobile aparecem/desaparecem
+  useEffect(() => {
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+    setViewportHeight(`${window.innerHeight}px`);
+  }, []);
 
   useEffect(() => {
     let ticking = false;
@@ -55,7 +65,13 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen overflow-hidden">
+    <section 
+      className="relative overflow-hidden" 
+      style={isMobile 
+        ? { height: viewportHeight || '100svh' }  // Mobile: altura fixa para evitar jump
+        : { minHeight: '100vh' }                   // Desktop: min-height para permitir expansão
+      }
+    >
       {/* Video Background */}
       <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
         <source src="/videos/hero-bg.mp4" type="video/mp4" />
@@ -77,7 +93,7 @@ const Hero = () => {
         }} transition={{
           duration: 0.8,
           ease: [0.22, 1, 0.36, 1]
-        }} className="mt-20 mb-4 md:mb-6 ">
+        }} className="mt-20 md:mt-0 mb-4">
             <img src={logoHero} alt="Transuniverso" className="h-16 md:h-24 w-auto mx-auto" />
           </motion.div>
 
@@ -92,7 +108,7 @@ const Hero = () => {
           duration: 1,
           delay: 0.2,
           ease: [0.22, 1, 0.36, 1]
-        }} className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-2 md:mb-6 lg:text-6xl">
+        }} className="text-3xl md:text-6xl font-bold tracking-tight text-foreground mb-2 md:mb-6 md:w-[700px] md:m-auto">
             Transporte inteligente para um novo mercado
           </motion.h1>
 
@@ -107,7 +123,7 @@ const Hero = () => {
           duration: 1,
           delay: 0.4,
           ease: [0.22, 1, 0.36, 1]
-        }} className="text-lg md:text-xl max-w-2xl mx-auto mb-10 text-secondary-foreground">
+        }} className="text-base md:text-xl max-w-2xl mx-auto mb-6 text-secondary-foreground md:w-[700px]">
             Unimos tecnologia, pontualidade e segurança para transformar o transporte da sua carga.
           </motion.p>
 

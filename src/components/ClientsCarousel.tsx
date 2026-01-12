@@ -29,7 +29,7 @@ const ClientsCarousel = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="py-8 md:py-12 bg-background/50 border-y border-border/30 overflow-hidden"
+      className="py-6 bg-background/50 border-y border-border/30 overflow-hidden"
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
