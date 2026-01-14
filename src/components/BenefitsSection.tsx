@@ -37,8 +37,8 @@ const BenefitsSection = () => {
   // margin negativo faz a detecção acontecer mais tarde (quando o conteúdo está mais centralizado)
   const isInView = useInView(contentRef, { 
     once: true, 
-    amount: 0.4,
-    margin: "-100px 0px -100px 0px" // Adia a detecção em 100px do topo e fundo
+    amount: 0.2,
+    margin: "-50px 0px -50px 0px"
   });
 
   // Captura altura apenas uma vez no mount
@@ -50,7 +50,7 @@ const BenefitsSection = () => {
 
   return (
     <section 
-      className="relative w-screen overflow-hidden bg-[#0a0a0f] flex items-center"
+      className={`relative w-screen overflow-hidden flex items-center ${isMobile ? 'bg-[#0a0a0f]' : 'bg-slate-900/50'}`}
       style={{ 
         marginLeft: 'calc(-50vw + 50%)', 
         marginRight: 'calc(-50vw + 50%)',
@@ -71,13 +71,13 @@ const BenefitsSection = () => {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span className="text-[10px] md:text-xs tracking-[0.3em] text-[#ff0000] uppercase font-medium">
-                Diferenciais
+              <span className="text-[10px] md:text-xs tracking-[0.3em]  uppercase font-medium">
+                Texto
               </span>
               
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-[1.1] tracking-tight">
                 Seu transporte com{' '}
-                <span className="text-[#ff0000]">garantia</span> de:
+                <span className="">garantia</span> de:
               </h2>
               
               <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-md">
@@ -96,21 +96,21 @@ const BenefitsSection = () => {
                     : { opacity: 0, y: 40, scale: 0.95 }
                   }
                   transition={{ 
-                    duration: 0.6,
-                    delay: 0.2 + index * 0.15, // Sequencial: 0.2s, 0.35s, 0.5s, 0.65s
+                    duration: 0.5,
+                    delay: 0.1 + index * 0.08, // Sequencial: 0.1s, 0.18s, 0.26s, 0.34s
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   className={`
                     group relative p-5 md:p-6 rounded-2xl 
-                    bg-[#12121a] border border-white/5
-                    hover:border-[#ff0000]/30 hover:bg-[#15151f]
+                    bg-slate-900 border border-white/5
+                    hover:border-slate-50/30
                     transition-colors duration-300
                     ${benefit.floating ? 'lg:-translate-y-6 shadow-2xl shadow-black/50' : ''}
                   `}
                 >
                   {/* Ícone */}
-                  <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-[#ff0000]/10 border border-[#ff0000]/20 flex items-center justify-center mb-4 group-hover:bg-[#ff0000]/15 transition-colors duration-300">
-                    <benefit.icon className="w-5 h-5 md:w-6 md:h-6 text-[#ff0000]" strokeWidth={1.5} />
+                  <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gray-900 border border-white/20 flex items-center justify-center mb-4 group-hover:bg-white/15 transition-colors duration-300">
+                    <benefit.icon className="w-5 h-5 md:w-6 md:h-6 text-[#fff]" strokeWidth={1.5} />
                   </div>
 
                   {/* Título */}
