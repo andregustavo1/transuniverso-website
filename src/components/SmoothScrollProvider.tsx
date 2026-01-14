@@ -1,9 +1,24 @@
-import { ReactLenis } from 'lenis/react';
+import { ReactLenis, useLenis } from 'lenis/react';
 import { ReactNode, useState, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Registrar ScrollTrigger uma vez
+gsap.registerPlugin(ScrollTrigger);
 
 interface SmoothScrollProviderProps {
   children: ReactNode;
 }
+
+// Componente interno que sincroniza Lenis com GSAP ScrollTrigger
+const ScrollTriggerSync = ({ children }: { children: ReactNode }) => {
+  // A cada frame do Lenis, atualiza o ScrollTrigger
+  useLenis(() => {
+    ScrollTrigger.update();
+  });
+
+  return <>{children}</>;
+};
 
 const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -27,9 +42,12 @@ const SmoothScrollProvider = ({ children }: SmoothScrollProviderProps) => {
         lerp: 0.1,
         duration: 1.2,
         smoothWheel: true,
+        syncTouch: true, // Melhor sincronização em dispositivos touch
       }}
     >
-      {children}
+      <ScrollTriggerSync>
+        {children}
+      </ScrollTriggerSync>
     </ReactLenis>
   );
 };
