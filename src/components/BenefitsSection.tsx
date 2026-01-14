@@ -50,7 +50,7 @@ const BenefitsSection = () => {
 
   return (
     <section 
-      className={`relative w-screen overflow-hidden flex items-center ${isMobile ? 'bg-[#0a0a0f]' : 'bg-slate-900/50'}`}
+      className={`relative w-screen overflow-hidden flex items-center ${isMobile ? 'bg-[#0f172a]' : 'bg-slate-950/40'}`}
       style={{ 
         marginLeft: 'calc(-50vw + 50%)', 
         marginRight: 'calc(-50vw + 50%)',
@@ -102,14 +102,15 @@ const BenefitsSection = () => {
                   }}
                   className={`
                     group relative p-5 md:p-6 rounded-2xl 
-                    bg-slate-900 border border-white/5
+                    ${isMobile ? 'bg-slate-800/50' : 'bg-slate-900/30'}
+                    border border-white/5
                     hover:border-slate-50/30
                     transition-colors duration-300
                     ${benefit.floating ? 'lg:-translate-y-6 shadow-2xl shadow-black/50' : ''}
                   `}
                 >
                   {/* Ícone */}
-                  <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gray-900 border border-white/20 flex items-center justify-center mb-4 group-hover:bg-white/15 transition-colors duration-300">
+                  <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-slate-900/50 border border-white/20 flex items-center justify-center mb-4 group-hover:bg-white/15 transition-colors duration-300">
                     <benefit.icon className="w-5 h-5 md:w-6 md:h-6 text-[#ff0000]" strokeWidth={1.5} />
                   </div>
 

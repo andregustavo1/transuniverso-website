@@ -48,7 +48,7 @@ const journeyCards: JourneyCard[] = [
     title: "Etapa 05",
     subtitle: "Entrega",
     description: "A entrega é concluída com confirmação e registro. O processo se encerra com visibilidade total do transporte e indicadores que reforçam pontualidade e performance.",
-    bgColor: "#0a0a0f",
+    bgColor: "#0f172a",
   },
 ];
 
@@ -121,11 +121,13 @@ const JornadaCarga = () => {
         transition: 'background-color 0.5s ease-out',
       }}
     >
-      {/* Header label */}
-      <div className="absolute top-6 left-5 md:top-8 md:left-8 z-20">
-        <span className="text-[10px] md:text-xs tracking-[0.3em] text-gray-500 uppercase">
-          Jornada da Carga
-        </span>
+      {/* Header label - alinhado com o conteúdo */}
+      <div className="absolute mt-10 top-6 md:top-8 left-0 right-0 z-20 px-5 md:px-0">
+        <div className="max-w-7xl mx-auto">
+          <span className="text-[10px] md:text-xs tracking-[0.3em] text-gray-500 uppercase">
+            Jornada da Carga
+          </span>
+        </div>
       </div>
 
       <div 
