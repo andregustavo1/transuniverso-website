@@ -20,35 +20,35 @@ const journeyCards: JourneyCard[] = [
     title: "Etapa 01",
     subtitle: "Solicitação de Transporte",
     description: "A solicitação acontece de forma simples e digital. As informações da carga são centralizadas e tratadas com inteligência para dar agilidade desde o primeiro contato.",
-    bgColor: "#0a0a0f",
+    bgColor: "#0f172a",
   },
   {
     id: 2,
     title: "Etapa 02",
     subtitle: "Planejamento Operacional",
     description: "Cada transporte é planejado com base em dados, rotas e capacidade operacional. A tecnologia garante decisões mais precisas, reduzindo riscos e aumentando a eficiência da operação.",
-    bgColor: "#0d1b2a",
+    bgColor: "#070836",
   },
   {
     id: 3,
     title: "Etapa 03",
     subtitle: "Coleta e Início do Transporte",
     description: "A coleta é realizada conforme o planejamento definido. A carga inicia o transporte com controle operacional e comunicação clara entre todos os envolvidos.",
-    bgColor: "#1a1a2e",
+    bgColor: "#163B49",
   },
   {
     id: 4,
     title: "Etapa 04",
     subtitle: "Gestão de Risco e Monitoramento",
     description: "Durante todo o percurso, a carga é monitorada em tempo real. Protocolos de segurança, rastreamento e gestão de risco garantem mais proteção, previsibilidade e tranquilidade.",
-    bgColor: "#16213e",
+    bgColor: "#16222E",
   },
   {
     id: 5,
     title: "Etapa 05",
     subtitle: "Entrega",
     description: "A entrega é concluída com confirmação e registro. O processo se encerra com visibilidade total do transporte e indicadores que reforçam pontualidade e performance.",
-    bgColor: "#0f0f23",
+    bgColor: "#0a0a0f",
   },
 ];
 
@@ -141,11 +141,11 @@ const JornadaCarga = () => {
           {journeyCards.map((card, index) => (
             <div
               key={card.id}
-              className="relative flex-shrink-0 flex items-center w-screen"
+              className="relative flex-shrink-0 flex items-center justify-center w-screen"
               style={{ height: isMobile && viewportHeight ? viewportHeight : '100vh' }}
             >
               {/* Decorative background - hidden on mobile */}
-              <div className="absolute pointer-events-none right-[10%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] opacity-20 hidden md:block">
+              <div className="absolute pointer-events-none right-[15%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] opacity-20 hidden md:block">
                 <div 
                   className="w-full h-full rounded-full"
                   style={{
@@ -157,7 +157,7 @@ const JornadaCarga = () => {
 
               {/* Image placeholder - Desktop */}
               <div 
-                className="absolute pointer-events-none right-[12%] top-1/2 -translate-y-1/2 w-[30vw] h-[30vw] max-w-[500px] max-h-[500px] hidden md:flex"
+                className="absolute pointer-events-none right-[15%] top-1/2 -translate-y-1/2 w-[28vw] h-[28vw] max-w-[450px] max-h-[450px] hidden md:flex"
                 style={{ zIndex: 1 }}
               >
                 <div className="w-full h-full rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm">
@@ -177,9 +177,9 @@ const JornadaCarga = () => {
               </div>
 
               {/* Content */}
-              <div className="relative z-10 px-5 md:px-16 lg:px-24 w-full">
+              <div className="relative flex z-10 px-5 md:px-0 w-full max-w-7xl mx-auto">
                 <motion.div
-                  className="max-w-full md:max-w-[40%]"
+                  className="max-w-full md:max-w-[45%]"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
@@ -228,16 +228,20 @@ const JornadaCarga = () => {
           ))}
         </div>
 
-        {/* Progress indicator */}
-        <div className="absolute bottom-8 left-5 md:bottom-12 md:left-16 lg:left-24 flex items-center gap-2 md:gap-3 z-50">
-          {journeyCards.map((_, i) => (
-            <div
-              key={i}
-              className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
-                i === activeIndex ? 'bg-[#ff0000] w-6 md:w-8' : 'bg-gray-600 w-1.5 md:w-2'
-              }`}
-            />
-          ))}
+        {/* Progress indicator - alinhado com o conteúdo */}
+        <div className="absolute bottom-8 md:bottom-12 left-0 right-0 z-50 px-5 md:px-0">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-2 md:gap-3">
+              {journeyCards.map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${
+                    i === activeIndex ? 'bg-[#ff0000] w-6 md:w-8' : 'bg-gray-600 w-1.5 md:w-2'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

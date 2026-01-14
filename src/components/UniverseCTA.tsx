@@ -175,7 +175,8 @@ const UniverseCTA = () => {
             mt-10 md:mt-14 px-8 md:px-12 py-4 md:py-5
             border border-white/60 text-white text-sm md:text-base
             font-medium tracking-[0.2em] uppercase
-            bg-transparent transition-all duration-500 ease-out
+            bg-transparent
+            transition-[border-color,box-shadow] duration-500 ease-out
             hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]
             focus:outline-none focus:ring-2 focus:ring-white/30
           "

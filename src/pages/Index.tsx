@@ -1,6 +1,7 @@
 import Hero from "@/components/Hero";
 import ClientsCarousel from "@/components/ClientsCarousel";
 import JornadaCarga from "@/components/JornadaCarga";
+import BenefitsSection from "@/components/BenefitsSection";
 import UniverseCTA from "@/components/UniverseCTA";
 
 const Index = () => {
@@ -9,6 +10,7 @@ const Index = () => {
       <Hero />
       <ClientsCarousel />
       <JornadaCarga />
+      <BenefitsSection />
       <UniverseCTA />
     </div>
   );
