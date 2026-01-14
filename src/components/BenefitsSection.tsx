@@ -110,7 +110,7 @@ const BenefitsSection = () => {
                 >
                   {/* Ícone */}
                   <div className="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gray-900 border border-white/20 flex items-center justify-center mb-4 group-hover:bg-white/15 transition-colors duration-300">
-                    <benefit.icon className="w-5 h-5 md:w-6 md:h-6 text-[#fff]" strokeWidth={1.5} />
+                    <benefit.icon className="w-5 h-5 md:w-6 md:h-6 text-[#ff0000]" strokeWidth={1.5} />
                   </div>
 
                   {/* Título */}
