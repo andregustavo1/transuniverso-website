@@ -15,41 +15,41 @@ interface JourneyCard {
 }
 
 const journeyCards: JourneyCard[] = [
-  {
-    id: 1,
-    title: "Etapa 01",
-    subtitle: "Solicitação de Transporte",
-    description: "A solicitação acontece de forma simples e digital. As informações da carga são centralizadas e tratadas com inteligência para dar agilidade desde o primeiro contato.",
-    bgColor: "#0f172a",
-  },
-  {
-    id: 2,
-    title: "Etapa 02",
-    subtitle: "Planejamento Operacional",
-    description: "Cada transporte é planejado com base em dados, rotas e capacidade operacional. A tecnologia garante decisões mais precisas, reduzindo riscos e aumentando a eficiência da operação.",
-    bgColor: "#070836",
-  },
-  {
-    id: 3,
-    title: "Etapa 03",
-    subtitle: "Coleta e Início do Transporte",
-    description: "A coleta é realizada conforme o planejamento definido. A carga inicia o transporte com controle operacional e comunicação clara entre todos os envolvidos.",
-    bgColor: "#163B49",
-  },
-  {
-    id: 4,
-    title: "Etapa 04",
-    subtitle: "Gestão de Risco e Monitoramento",
-    description: "Durante todo o percurso, a carga é monitorada em tempo real. Protocolos de segurança, rastreamento e gestão de risco garantem mais proteção, previsibilidade e tranquilidade.",
-    bgColor: "#16222E",
-  },
-  {
-    id: 5,
-    title: "Etapa 05",
-    subtitle: "Entrega",
-    description: "A entrega é concluída com confirmação e registro. O processo se encerra com visibilidade total do transporte e indicadores que reforçam pontualidade e performance.",
-    bgColor: "#0f172a",
-  },
+{
+  id: 1,
+  title: "Etapa 01",
+  subtitle: "Solicitação Inteligente",
+  description: "Tudo começa de forma simples, digital e organizada. As informações da carga são registradas em um fluxo único, eliminando ruídos, retrabalho e incertezas já no primeiro contato.",
+  bgColor: "#0f172a",
+},
+{
+  id: 2,
+  title: "Etapa 02",
+  subtitle: "Planejamento Operacional",
+  description: "Antes da carga sair, cada detalhe é analisado. Capacidade operacional, tipo de carga e rotas são avaliados para que o transporte aconteça de forma previsível, segura e eficiente.",
+  bgColor: "#070836",
+},
+{
+  id: 3,
+  title: "Etapa 03",
+  subtitle: "Coleta e Início do Transporte",
+  description: "Com o planejamento definido, a coleta acontece no tempo certo. A carga inicia seu percurso com controle operacional, comunicação clara e processos bem definidos desde a origem.",
+  bgColor: "#163B49",
+},
+{
+  id: 4,
+  title: "Etapa 04",
+  subtitle: "Gestão de Risco e Monitoramento",
+  description: "Durante todo o percurso, a carga é acompanhada com monitoramento e protocolos de segurança. A operação conta com seguros obrigatórios: RC-V (Responsabilidade Civil do Veículo), RCTR-C (Responsabilidade Civil do Transportador Rodoviário de Carga) e RC-DC (Responsabilidade Civil por Desaparecimento de Carga), garantindo proteção, conformidade e tranquilidade.",
+  bgColor: "#16222E",
+},
+{
+  id: 5,
+  title: "Etapa 05",
+  subtitle: "Entrega Confirmada",
+  description: "A jornada se encerra com a entrega confirmada e registrada. Informações organizadas, histórico disponível e indicadores que reforçam pontualidade, confiabilidade e performance operacional.",
+  bgColor: "#0f172a",
+}
 ];
 
 const JornadaCarga = () => {
