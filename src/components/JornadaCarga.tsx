@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
+import caminhaoImg from '@/assets/caminhao.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -188,39 +189,55 @@ const JornadaCarga = () => {
 
                   {/* Image placeholder - Mobile (below text) */}
                   <div className="mt-8 flex justify-center md:hidden">
-                    <div className="w-40 h-40 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5">
+                    {index === 0 ? (
+                      <img 
+                        src={caminhaoImg} 
+                        alt="Caminhão - Etapa 01" 
+                        className="w-40 h-40 rounded-2xl object-cover"
+                      />
+                    ) : (
+                      <div className="w-40 h-40 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5">
+                        <div className="text-center text-white/40">
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            className="mx-auto mb-1 w-8 h-8"
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span className="block text-[10px]">Imagem {index + 1}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+
+                {/* Image placeholder - Desktop (dentro do container para respeitar margens) */}
+                <div className="hidden md:flex w-[380px] lg:w-[420px] xl:w-[450px] h-[380px] lg:h-[420px] xl:h-[450px] flex-shrink-0">
+                  {index === 0 ? (
+                    <img 
+                      src={caminhaoImg} 
+                      alt="Caminhão - Etapa 01" 
+                      className="w-full h-full rounded-2xl object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm">
                       <div className="text-center text-white/40">
                         <svg 
                           xmlns="http://www.w3.org/2000/svg" 
-                          className="mx-auto mb-1 w-8 h-8"
+                          className="mx-auto mb-2 w-16 h-16"
                           fill="none" 
                           viewBox="0 0 24 24" 
                           stroke="currentColor"
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <span className="block text-[10px]">Imagem {index + 1}</span>
+                        <span className="block text-sm">Imagem {index + 1}</span>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-
-                {/* Image placeholder - Desktop (dentro do container para respeitar margens) */}
-                <div className="hidden md:flex w-[380px] lg:w-[420px] xl:w-[450px] h-[380px] lg:h-[420px] xl:h-[450px] flex-shrink-0">
-                  <div className="w-full h-full rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm">
-                    <div className="text-center text-white/40">
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="mx-auto mb-2 w-16 h-16"
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span className="block text-sm">Imagem {index + 1}</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -163,7 +163,7 @@ const UniverseCTA = () => {
           viewport={{ once: true }}
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white text-center tracking-[0.15em] md:tracking-[0.2em] leading-tight"
         >
-          TEXTO TEXTO TEXTO TEXTO
+          COTE AGORA O SEU FRETE!
         </motion.h2>
 
         <motion.button
