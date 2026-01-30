@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useIsMobile } from '@/hooks/use-mobile';
-import caminhaoImg from '@/assets/caminhao.png';
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -41,14 +41,14 @@ const journeyCards: JourneyCard[] = [
   id: 4,
   title: "Etapa 04",
   subtitle: "Gestão de Risco e Monitoramento",
-  description: "Durante todo o percurso, a carga é acompanhada com monitoramento e protocolos de segurança. A operação conta com seguros obrigatórios: RC-V (Responsabilidade Civil do Veículo), RCTR-C (Responsabilidade Civil do Transportador Rodoviário de Carga) e RC-DC (Responsabilidade Civil por Desaparecimento de Carga), garantindo proteção, conformidade e tranquilidade.",
+  description: "Durante o percurso, a carga é acompanhada com monitoramento e conta com os seguros: RC-V, RCTR-C e RC-DC, garantindo proteção e tranquilidade.",
   bgColor: "#16222E",
 },
 {
   id: 5,
   title: "Etapa 05",
   subtitle: "Entrega Confirmada",
-  description: "A jornada se encerra com a entrega confirmada e registrada. Informações organizadas, histórico disponível e indicadores que reforçam pontualidade, confiabilidade e performance operacional.",
+  description: "A jornada se encerra com a entrega confirmada e registrada. Informações organizadas e indicadores que reforçam pontualidade, confiabilidade e performance operacional.",
   bgColor: "#0f172a",
 }
 ];
@@ -147,98 +147,58 @@ const JornadaCarga = () => {
               className="relative flex-shrink-0 flex items-center justify-center w-screen"
               style={{ height: isMobile && viewportHeight ? viewportHeight : '100vh' }}
             >
-              {/* Decorative background - hidden on mobile */}
-              <div className="absolute pointer-events-none right-[15%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] opacity-20 hidden md:block">
-                <div 
-                  className="w-full h-full rounded-full"
-                  style={{
-                    background: `radial-gradient(circle, ${card.bgColor === '#0a0a0f' ? 'rgba(249,115,22,0.3)' : 'rgba(147,51,234,0.2)'} 0%, transparent 70%)`,
-                    filter: 'blur(60px)',
-                  }}
-                />
-              </div>
-
+              
               {/* Content */}
-              <div className="relative flex z-10 px-5 md:px-0 w-full max-w-7xl mx-auto items-center justify-between">
+              <div className="relative z-10 md:mt-[-6rem] flex flex-col items-center justify-center text-center px-5 w-full">
+                {/* Número grande centralizado */}
                 <motion.div
-                  className="max-w-full md:max-w-[45%]"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  className="relative flex items-center justify-center w-full"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ minHeight: '1em' }}
                 >
-                  <span className="tracking-[0.2em] text-[#ff0000] font-medium mb-2 md:mb-4 block text-xs md:text-sm">
-                    {card.title}
+                  {/* Número com máscara de gradiente para corte */}
+                  <span
+                    className="text-[15rem] md:text-[20rem] font-medium text-white/10 leading-none select-none block w-full"
+                    style={{
+                      fontFamily: 'system-ui, -apple-system, sans-serif',
+                      WebkitMaskImage: 'linear-gradient(to bottom, #fff 70%, transparent 71%)',
+                      maskImage: 'linear-gradient(to bottom, #fff 70%, transparent 71%)',
+                    }}
+                  >
+                    {String(card.id).padStart(2, '0')}
                   </span>
-
-                  <h2 className="font-extrabold text-white mb-4 md:mb-8 leading-[1.1] tracking-tight text-2xl md:text-5xl lg:text-6xl">
-                    {card.subtitle}
-                  </h2>
-
-                  <p className="text-gray-400 leading-relaxed tracking-wide text-sm md:text-xl max-w-lg">
-                    {card.description}
-                  </p>
-
-                  <motion.div
-                    className="mt-6 md:mt-12 h-[2px] bg-gradient-to-r from-[#ff0000] to-transparent"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: '60%' }}
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
+                  {/* Linha gradient sobreposta */}
+                  <span
+                    className="mx-auto pointer-events-none absolute left-0 right-0"
+                    style={{
+                      top: '70%',
+                      width: '300px',
+                      height: '2px',
+                      background: 'linear-gradient(90deg, transparent 0%, #fff 50%, transparent 100%)',
+                      opacity: 0.5,
+                    }}
                   />
-
-                  {/* Image placeholder - Mobile (below text) */}
-                  <div className="mt-8 flex justify-center md:hidden">
-                    {index === 0 ? (
-                      <img 
-                        src={caminhaoImg} 
-                        alt="Caminhão - Etapa 01" 
-                        className="w-40 h-40 rounded-2xl object-cover"
-                      />
-                    ) : (
-                      <div className="w-40 h-40 rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5">
-                        <div className="text-center text-white/40">
-                          <svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            className="mx-auto mb-1 w-8 h-8"
-                            fill="none" 
-                            viewBox="0 0 24 24" 
-                            stroke="currentColor"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          <span className="block text-[10px]">Imagem {index + 1}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
                 </motion.div>
 
-                {/* Image placeholder - Desktop (dentro do container para respeitar margens) */}
-                <div className="hidden md:flex w-[380px] lg:w-[420px] xl:w-[450px] h-[380px] lg:h-[420px] xl:h-[450px] flex-shrink-0">
-                  {index === 0 ? (
-                    <img 
-                      src={caminhaoImg} 
-                      alt="Caminhão - Etapa 01" 
-                      className="w-full h-full rounded-2xl object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm">
-                      <div className="text-center text-white/40">
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          className="mx-auto mb-2 w-16 h-16"
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke="currentColor"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span className="block text-sm">Imagem {index + 1}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  {/* Texto centralizado abaixo do número */}
+                  <motion.div
+                    className="max-w-3xl h-[8rem] md:h-0 mt-[-4rem]"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <h2 className="font-bold text-white mb-3 md:mb-4 leading-tight text-xl md:text-3xl lg:text-4xl">
+                      {card.subtitle}
+                    </h2>
+
+                    <p className="text-gray-400 leading-relaxed text-sm md:text-base max-w-xl mx-auto">
+                      {card.description}
+                    </p>
+                  </motion.div>
               </div>
             </div>
           ))}
