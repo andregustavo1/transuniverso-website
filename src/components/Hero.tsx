@@ -140,9 +140,15 @@ const Hero = () => {
           ease: [0.22, 1, 0.36, 1]
         }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <MagneticButton strength={0.4}>
-              <Button size="lg" variant="outline" className="rounded-full px-8 font-medium bg-white text-black border-transparent hover:bg-white/10 hover:text-white hover:border-white backdrop-blur-sm">
-                Solicitar Cotação
-              </Button>
+              <a
+                href="https://api.whatsapp.com/send/?phone=5511940134501&text&type=phone_number&app_absent=0"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="lg" variant="outline" className="rounded-full px-8 font-medium bg-white text-black border-transparent hover:bg-white/10 hover:text-white hover:border-white backdrop-blur-sm">
+                  Solicitar Cotação
+                </Button>
+              </a>
             </MagneticButton>
           </motion.div>
 

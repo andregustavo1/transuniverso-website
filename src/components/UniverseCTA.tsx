@@ -181,7 +181,14 @@ const UniverseCTA = () => {
             focus:outline-none focus:ring-2 focus:ring-white/30
           "
         >
-          Solicitar Cotação
+          <a
+            href="https://api.whatsapp.com/send/?phone=5511940134501&text&type=phone_number&app_absent=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'inherit', textDecoration: 'none' }}
+          >
+            Solicitar Cotação
+          </a>
         </motion.button>
       </div>
 
