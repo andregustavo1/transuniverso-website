@@ -144,6 +144,13 @@ const Hero = () => {
                 href="https://api.whatsapp.com/send/?phone=5511940134501&text&type=phone_number&app_absent=0"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={e => {
+                  // Chama a função de conversão do Google
+                  if (window.gtag_report_conversion) {
+                    e.preventDefault();
+                    window.gtag_report_conversion("https://api.whatsapp.com/send/?phone=5511940134501&text&type=phone_number&app_absent=0");
+                  }
+                }}
               >
                 <Button size="lg" variant="outline" className="rounded-full px-8 font-medium bg-white text-black border-transparent hover:bg-white/10 hover:text-white hover:border-white backdrop-blur-sm">
                   Solicitar Cotação
