@@ -17,6 +17,8 @@ const UniverseCTA = () => {
   const animationRef = useRef<number>();
   const isMobileRef = useRef(false);
   const dimensionsRef = useRef({ width: 0, height: 0 });
+  const isVisibleRef = useRef<boolean>(true);
+  const animateFnRef = useRef<(() => void) | null>(null);
   
   // Estado para altura fixa no mobile (evita jump)
   const [viewportHeight, setViewportHeight] = useState<string | null>(null);
@@ -107,7 +109,9 @@ const UniverseCTA = () => {
       
       ctx.globalAlpha = 1;
 
-      animationRef.current = requestAnimationFrame(animate);
+      if (isVisibleRef.current) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
     };
 
     // Throttled resize handler - apenas no desktop
@@ -118,11 +122,34 @@ const UniverseCTA = () => {
     };
 
     resizeCanvas();
+    animateFnRef.current = animate;
     animate();
 
     // No mobile, não escuta resize para evitar reset das estrelas quando barras do navegador mudam
     if (!isMobileRef.current) {
       window.addEventListener('resize', handleResize, { passive: true });
+    }
+
+    // IntersectionObserver: pausar animação quando seção sai do viewport
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        const wasVisible = isVisibleRef.current;
+        isVisibleRef.current = entry.isIntersecting;
+
+        if (!wasVisible && entry.isIntersecting && animateFnRef.current) {
+          if (animationRef.current) cancelAnimationFrame(animationRef.current);
+          animationRef.current = requestAnimationFrame(animateFnRef.current);
+        }
+
+        if (!entry.isIntersecting && animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+      },
+      { threshold: 0 }
+    );
+
+    if (container) {
+      intersectionObserver.observe(container);
     }
 
     return () => {
@@ -133,6 +160,7 @@ const UniverseCTA = () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
+      intersectionObserver.disconnect();
     };
   }, []);
 
@@ -161,9 +189,9 @@ const UniverseCTA = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: 'easeOut' }}
           viewport={{ once: true }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-white text-center tracking-[0.15em] md:tracking-[0.2em] leading-tight"
+          className="text-2xl uppercase sm:text-2xl md:text-32xl lg:text-4xl xl:w-[850px] xl:text-5xl font-extrabold text-white text-center tracking-[0.15em] md:tracking-[0.2em] leading-tight"
         >
-          COTE AGORA O SEU FRETE!
+          Solicite uma cotação gratuita agora 
         </motion.h2>
 
         <motion.button

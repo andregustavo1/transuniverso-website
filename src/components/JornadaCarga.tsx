@@ -19,15 +19,15 @@ const journeyCards: JourneyCard[] = [
 {
   id: 1,
   title: "Etapa 01",
-  subtitle: "Solicitação Inteligente",
-  description: "Tudo começa de forma simples, digital e organizada. As informações da carga são registradas em um fluxo único, eliminando ruídos, retrabalho e incertezas já no primeiro contato.",
+  subtitle: "Solicitação",
+  description: "As informações da carga são registradas e nossa equipe analisa e retorna com uma proposta clara.",
   bgColor: "#0f172a",
 },
 {
   id: 2,
   title: "Etapa 02",
   subtitle: "Planejamento Operacional",
-  description: "Antes da carga sair, cada detalhe é analisado. Capacidade operacional, tipo de carga e rotas são avaliados para que o transporte aconteça de forma previsível, segura e eficiente.",
+  description: "Antes de qualquer movimentação, a Transuniverso planeja cada detalhe: a melhor rota, o veículo adequado para o tipo de carga e o motorista responsável pelo serviço.",
   bgColor: "#070836",
 },
 {
@@ -40,7 +40,7 @@ const journeyCards: JourneyCard[] = [
 {
   id: 4,
   title: "Etapa 04",
-  subtitle: "Gestão de Risco e Monitoramento",
+  subtitle: "Seguro de Carga e Monitoramento",
   description: "Durante o percurso, a carga é acompanhada com monitoramento e conta com os seguros: RC-V, RCTR-C e RC-DC, garantindo proteção e tranquilidade.",
   bgColor: "#16222E",
 },
@@ -48,7 +48,7 @@ const journeyCards: JourneyCard[] = [
   id: 5,
   title: "Etapa 05",
   subtitle: "Entrega Confirmada",
-  description: "A jornada se encerra com a entrega confirmada e registrada. Informações organizadas e indicadores que reforçam pontualidade, confiabilidade e performance operacional.",
+  description: "A jornada se encerra com a entrega confirmada e registrada. Você tem acesso ao histórico completo do transporte.",
   bgColor: "#0f172a",
 }
 ];

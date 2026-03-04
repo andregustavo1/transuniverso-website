@@ -71,13 +71,10 @@ const BenefitsSection = () => {
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span className="text-[10px] md:text-xs tracking-[0.3em]  uppercase font-medium">
-                Texto
-              </span>
               
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground leading-[1.1] tracking-tight">
                 Seu transporte com{' '}
-                <span className="">garantia</span> de:
+                <span className="">garantia</span>
               </h2>
               
               <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-md">

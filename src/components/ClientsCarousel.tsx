@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 import client1 from "@/assets/clients/client-1.png";
 import client2 from "@/assets/clients/client-2.png";
 import client3 from "@/assets/clients/client-3.png";
@@ -9,6 +10,24 @@ import client7 from "@/assets/clients/client-7.png";
 import client8 from "@/assets/clients/client-8.png";
 
 const ClientsCarousel = () => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsPaused(!entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   const clients = [
     { name: "Cliente 1", logo: client1 },
     { name: "Cliente 2", logo: client2 },
@@ -25,6 +44,7 @@ const ClientsCarousel = () => {
 
   return (
     <motion.section
+      ref={sectionRef}
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
@@ -49,7 +69,7 @@ const ClientsCarousel = () => {
         <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10" />
 
         {/* Scrolling container */}
-        <div className="flex animate-scroll w-max">
+        <div className="flex animate-scroll w-max" style={isPaused ? { animationPlayState: 'paused' } : undefined}>
           {duplicatedClients.map((client, index) => (
             <div
               key={index}

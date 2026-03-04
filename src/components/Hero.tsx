@@ -3,6 +3,7 @@ import { motion, useInView, animate } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import logoHero from "@/assets/logo-hero.png";
 import MagneticButton from "./MagneticButton";
+import UniverseParticles from "./UniverseParticles";
 
 const AnimatedNumber = ({
   value,
@@ -72,13 +73,11 @@ const Hero = () => {
         : { minHeight: '100vh' }                   // Desktop: min-height para permitir expansão
       }
     >
-      {/* Video Background */}
-      <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
-        <source src="/videos/hero-bg.mp4" type="video/mp4" />
-      </video>
+      {/* Universe Particles Background */}
+      <UniverseParticles />
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 video-overlay" />
+      {/* Subtle Overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050a14]/30 via-transparent to-[#050a14]/60" />
 
       {/* Content */}
       <div className="absolute top-1/2 left-1/2 z-10 container mx-auto px-4 text-center" style={{ transform: `translate(-50%, -50%) translateY(${scrollY * 0.2}px)`, willChange: 'transform' }}>
@@ -109,7 +108,7 @@ const Hero = () => {
           delay: 0.2,
           ease: [0.22, 1, 0.36, 1]
         }} className="text-3xl md:text-6xl font-bold tracking-tight text-foreground mb-2 md:mb-6 md:w-[750px] md:m-auto">
-            Transporte rodoviário com inteligência operacional
+            Transporte rodoviário com pontualidade e segurança.
           </motion.h1>
 
           {/* Subheadline */}
@@ -124,7 +123,7 @@ const Hero = () => {
           delay: 0.4,
           ease: [0.22, 1, 0.36, 1]
         }} className="text-base md:text-xl max-w-2xl mx-auto mb-6 text-secondary-foreground md:w-[700px]">
-            Unimos tecnologia e experiência para garantir pontualidade, segurança e controle em cada entrega.
+            Unimos tecnologia e experiência para garantir que sua carga chegue no prazo com cobertura e controle.
           </motion.p>
 
           {/* CTA Buttons */}
