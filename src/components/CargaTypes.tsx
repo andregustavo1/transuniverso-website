@@ -56,7 +56,9 @@ const CargaTypes = () => {
                   {carga.description}
                 </p>
                 <a
-                  href="#contato"
+                  href="https://api.whatsapp.com/send/?phone=5511940134501&text&type=phone_number&app_absent=0"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block bg-[#fff] hover:bg-white/10 border border-[#fff] text-black hover:text-white text-sm font-bold uppercase tracking-wide px-6 py-3 rounded-full transition-colors duration-200"
                 >
                   Fale com um especialista
