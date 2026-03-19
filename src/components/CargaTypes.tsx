@@ -1,5 +1,6 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import fracionadoImage from '@/assets/fracionado.png';
 
 const cargaTypes = [
   {
@@ -13,8 +14,7 @@ const cargaTypes = [
     title: "Carga Fracionada",
     description:
       "Transporte para quem precisa de agilidade e economia. Sua carga segue junto com as outras, reduzindo custos e garantindo segurança e eficiência na entrega.",
-    image:
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80",
+    image: fracionadoImage,
   },
 ];
 
