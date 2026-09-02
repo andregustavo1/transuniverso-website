@@ -4,7 +4,7 @@ import fracionadoImage from '@/assets/fracionado.png';
 
 const cargaTypes = [
   {
-    title: "Carga Lotação",
+    title: "Carga Dedicada",
     description:
       "Um veículo exclusivo para a sua carga, do ponto de coleta ao destino final. Sem paradas intermediárias, com mais agilidade e total controle da operação.",
     image:
