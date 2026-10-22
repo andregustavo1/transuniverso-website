@@ -1,55 +1,37 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-visual" />
-    <!-- Previne zoom no iOS quando foca em inputs -->
-    <meta name="format-detection" content="telephone=no" />
-    <!-- TODO: Set the document title to the name of your application -->
-    <title>Transuniverso</title>
-    <meta name="description" content="Transuniverso Transportadora" />
-    <meta name="author" content="Transuniverso" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transportadora de Lotação e Fracionada | Transuniverso</title>
+    <meta name="description" content="Transportadora em Mogi das Cruzes/SP: frete lotação e fracionado para todo o Brasil, frota própria e seguro de 100% da carga. Cotação em 15 min no WhatsApp." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://www.transuniverso.com.br/" />
 
-    <!-- TODO: Update og:title to match your application name -->
-    <meta property="og:title" content="Transuniverso" />
-    <meta property="og:description" content="Transuniverso Transportadora" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Transuniverso" />
+    <meta property="og:url" content="https://www.transuniverso.com.br/" />
+    <meta property="og:title" content="Transportadora de Lotação e Fracionada | Transuniverso" />
+    <meta property="og:description" content="Lotação e fracionada para todo o Brasil, com frota própria e seguro de 100% da carga. Cotação em menos de 15 minutos pelo WhatsApp." />
+    <meta property="og:image" content="https://www.transuniverso.com.br/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Caminhão da Transuniverso na estrada, com o texto: Sua carga no prazo e segurada." />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Transuniverso" />
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17990074896"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'AW-17990074896');
-    </script>
-
-    <!-- Event snippet for Solicitar cotação conversion page
-    In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
-    <script>
-    function gtag_report_conversion(url) {
-      var callback = function () {
-        if (typeof(url) != 'undefined') {
-          window.location = url;
-        }
-      };
-      gtag('event', 'conversion', {
-          'send_to': 'AW-17990074896/PfMoCOi0p4IcEJCEq4JD',
-          'event_callback': callback
-      });
-      return false;
-    }
-    </script>
-
+    <meta name="twitter:title" content="Transportadora de Lotação e Fracionada | Transuniverso" />
+    <meta name="twitter:description" content="Lotação e fracionada para todo o Brasil, com frota própria e seguro de 100% da carga. Cotação em menos de 15 minutos pelo WhatsApp." />
+    <meta name="twitter:image" content="https://www.transuniverso.com.br/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Caminhão da Transuniverso na estrada, com o texto: Sua carga no prazo e segurada." />
   </head>
-
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
