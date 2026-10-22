@@ -29,6 +29,33 @@
     <meta name="twitter:description" content="Lotação e fracionada para todo o Brasil, com frota própria e seguro de 100% da carga. Cotação em menos de 15 minutos pelo WhatsApp." />
     <meta name="twitter:image" content="https://www.transuniverso.com.br/og-image.jpg" />
     <meta name="twitter:image:alt" content="Caminhão da Transuniverso na estrada, com o texto: Sua carga no prazo e segurada." />
+
+    <!-- Google Analytics 4. gtag() queues calls right away, but gtag.js (~150 KB) only downloads once the page has
+         loaded and gone idle, so it doesn't compete with the first paint. Production domain only: dev and *.vercel.app
+         previews stay out of the reports. Every quote CTA is a wa.me link, so a click on one (or on the phone or
+         e-mail links) is a lead; cta_location says which section it came from. The form reports its own lead in Quote -->
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() { dataLayer.push(arguments) }
+      if (location.hostname === 'www.transuniverso.com.br') {
+        gtag('js', new Date())
+        gtag('config', 'G-46WQCRHKHX')
+        addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => {
+          const s = document.createElement('script')
+          s.async = true
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-46WQCRHKHX'
+          document.head.append(s)
+        }, { timeout: 4000 }))
+        addEventListener('click', (e) => {
+          const a = e.target.closest('a[href^="https://wa.me"], a[href^="tel:"], a[href^="mailto:"]')
+          if (!a) return
+          const method = a.href.startsWith('tel:') ? 'phone' : a.href.startsWith('mailto:') ? 'email' : 'whatsapp'
+          // "Trabalhe conosco" also opens WhatsApp, but it's a job seeker, not a customer
+          const job = decodeURIComponent(a.href).includes('trabalhar')
+          gtag('event', job ? 'trabalhe_conosco' : 'generate_lead', { method, cta_location: a.closest('header') ? 'header' : a.closest('section, footer')?.id })
+        }, true)
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

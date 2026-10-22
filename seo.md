@@ -102,8 +102,18 @@ Conferido no navegador com o build: a página hidrata sem erros no console, o ca
 7. ✅ **[Crítico] Migração do site atual.** O site no ar hoje também é uma SPA na Vercel, com uma só rota (`/`) e uma página 404 para o resto, sem sitemap. Não existem URLs antigas para redirecionar: o deploy novo substitui a mesma URL. Pontos encontrados:
    - O domínio sem `www` redireciona para o `www` com **307 (temporário)**. O certo é 308 ou 301 (permanente). Ver item 9.
    - O site atual tem a tag do **Google Ads `AW-17990074896`** com a conversão "Solicitar cotação". O site novo não tem essa tag. Não afeta SEO, mas se a empresa anuncia no Google Ads, as conversões param de ser contadas no deploy.
-8. 👤 **[Alto] Cadastrar no Google Search Console e no Bing Webmaster Tools** (o Bing alimenta o ChatGPT Search e o Copilot). O ideal é uma "propriedade de domínio" no Search Console, verificada por um registro TXT no DNS de transuniverso.com.br. Depois: enviar o `sitemap.xml` e importar a propriedade no Bing Webmaster Tools, que aceita importação direta do Search Console. Depende do acesso da empresa ao Google e ao DNS.
-9. ✅ **[Alto] URL canônica `https://www.transuniverso.com.br/`.** O `index.html` tem `<link rel="canonical">`, e o [vercel.json](vercel.json) redireciona `transuniverso.com.br` para o `www` com 308 (permanente), mantendo o caminho. A Vercel já força HTTPS. **Falta um ajuste no painel da Vercel:** hoje o redirect do domínio sem `www` está configurado em Settings → Domains com 307. Esse redirect do painel roda antes do `vercel.json`, então é preciso trocar para "308 Permanent Redirect" ou remover o redirect do painel e deixar o `vercel.json` cuidar.
+8. 🟡 **[Alto] Google Search Console: cadastrado em 22/10/2026** como propriedade de domínio (`transuniverso.com.br`), que cobre `www`, sem `www`, `http` e `https`. **Não apague o registro TXT do DNS:** ele mantém a verificação. Passos seguintes:
+    - **22/10, Inspeção de URL da home:**
+      - O teste ao vivo diz "URL disponível para o Google". "Não tem melhorias" é normal: o Search Console não tem relatório para `LocalBusiness`, e o FAQ não gera mais resultado enriquecido para empresas.
+      - O índice diz "Cópia sem página canônica selecionada pelo usuário". Isso vem do rastreamento das 10:45, ainda no site antigo, que não tinha canonical. Somado ao redirect temporário (307) do domínio sem `www`, o Google provavelmente escolheu `https://transuniverso.com.br/` como canônica.
+      - **Correção:** redirect trocado para 308 em 22/10 (item 9). Falta pedir a indexação da URL com `www` de novo.
+    - [x] Sitemaps: `https://www.transuniverso.com.br/sitemap.xml` já foi lido pelo Google (aparece como origem na inspeção).
+    - [ ] Inspeção de URL na home → "Testar URL ativa" → conferir o HTML renderizado e os dados estruturados → "Solicitar indexação" (uma vez só).
+    - [ ] Bing Webmaster Tools: "Importar do Google Search Console" e depois `npm run indexnow`.
+    - [ ] Configurações → Associações: vincular o GA4 quando ele existir (item 58).
+    - [ ] Depois de 3 a 7 dias, conferir o relatório Páginas.
+    - [ ] Depois de 2 a 4 semanas, conferir Desempenho → Consultas.
+9. ✅ **[Alto] URL canônica `https://www.transuniverso.com.br/`.** O `index.html` tem `<link rel="canonical">`, e o [vercel.json](vercel.json) redireciona `transuniverso.com.br` para o `www` com 308 (permanente), mantendo o caminho. A Vercel já força HTTPS. **Painel da Vercel ajustado em 22/10:** conferido no site no ar, todas as variantes respondem 308 (permanente). `https://transuniverso.com.br/` vai direto para o `www`, mantendo o caminho. `http://transuniverso.com.br/` passa antes pelo `https` sem `www` (dois saltos, o padrão da Vercel, sem problema para o Google). `http://www…` vai direto para o `https://www…`.
 10. ✅ **[Médio] `*.vercel.app` com `noindex`.** O `vercel.json` envia `X-Robots-Tag: noindex` em qualquer endereço `*.vercel.app`, além do canonical. O domínio próprio não é afetado. Não dá para testar localmente: conferir com `curl -I` no endereço `.vercel.app` depois do deploy.
 11. ✅ **[Médio] IndexNow.** A chave está em [public/3d469584e95406a52d84b9b7fea6edd1.txt](public/3d469584e95406a52d84b9b7fea6edd1.txt). Depois de cada deploy com mudança de conteúdo, rodar `npm run indexnow`, que avisa Bing, Yandex, Seznam e Naver. Rodar só depois que o site novo estiver no ar no domínio, porque o serviço busca a chave nele.
 12. ➖ **[Baixo] `<noscript>`:** dispensado. Com o item 1, robôs que não executam JS já leem a página inteira.
@@ -145,10 +155,26 @@ Endereço e categoria batem com o Google Meu Negócio: "R. Dr. Laércio da Silva
 
 ### 4. Conteúdo e palavras-chave
 
-27. **[Crítico] O H1 não tem palavra-chave** ([App.jsx:172](src/App.jsx:172)). "Sua carga no prazo e segurada." não diz "transportadora" nem "frete". Opções: incluir a faixa do copy (`TRANSPORTADORA RODOVIÁRIA · 15 ANOS · TODO O BRASIL`) ou ajustar o H1.
-28. **[Alto] O subtítulo do hero é um `<h2>`** ([App.jsx:173](src/App.jsx:173)) e deveria ser `<p>`, para a hierarquia de títulos começar certa.
+27. ✅ **[Crítico] H1 com palavra-chave, sem mudar o visual.** O H1 agora começa com um trecho `sr-only` (invisível na tela, lido por buscadores e leitores de tela): "Transuniverso, transportadora rodoviária para todo o Brasil: Sua carga no prazo e segurada." O "15 anos" ficou de fora porque a Receita registra abertura em 25/05/2012, ou seja, 14 anos hoje.
+    - **Risco:** o Google trata texto escondido como spam quando é usado para empilhar palavras-chave. Por isso o trecho é curto, verdadeiro, repete o que a página já diz e funciona como rótulo para leitores de tela. Não acrescente mais termos nele.
+28. ✅ **[Alto] O subtítulo do hero virou `<p>`** (era `<h2>`). O visual não mudou, e a hierarquia de títulos agora começa certa.
 29. **[Alto] Faltam páginas por serviço:** `/frete-lotacao`, `/carga-fracionada`, `/transporte-produtos-perigosos` e `/transporte-medicamentos-cosmeticos`, cada uma com cerca de 600 a 1.000 palavras e FAQ próprio. Uma página só ranqueia para poucas buscas.
-30. **[Alto] Palavras-chave para cobrir:** transportadora, transportadora em Mogi das Cruzes, transportadora Alto Tietê, transportadora SP, frete lotação, carga fracionada, frete fracionado, cotação de frete, transporte de produtos perigosos, transportadora com AFE ANVISA, transporte de medicamentos, transporte de cosméticos, transportadora com seguro de carga, frete São Paulo para [estado].
+30. ✅ **[Alto] Palavras-chave no texto.** Ajustes pequenos no texto que já existia, sem mudar o layout:
+
+    | Onde | Agora diz | Palavra-chave |
+    |---|---|---|
+    | Lotação | "No frete lotação, o caminhão inteiro é seu…" | frete lotação |
+    | Fracionada | "Pouca carga? No frete fracionado, você divide…" | frete fracionado |
+    | Produtos especiais | "Transporte de medicamentos, cosméticos e produtos perigosos…" | transporte de medicamentos, cosméticos, produtos perigosos |
+    | Intro de Serviços | "Frete lotação, carga fracionada ou carga que exige licença…" | frete lotação, carga fracionada |
+    | Garantia | "…viaja com seguro de carga." | seguro de carga |
+    | FAQ "Vocês atendem minha cidade?" | "Sim. Saímos de Mogi das Cruzes, no Alto Tietê (SP), atendemos todo o Brasil…" | Mogi das Cruzes, Alto Tietê, SP |
+    | FAQ "Quanto tempo leva a cotação?" | "A cotação de frete sai em menos de 15 minutos, em horário comercial, pelo WhatsApp." | cotação de frete |
+    | Alt da foto da Lotação | "…fazendo frete lotação na estrada" | frete lotação |
+    | Alt da foto da estrada | "Caminhão vermelho da transportadora Transuniverso…" | transportadora |
+
+    As respostas do FAQ também atualizam o JSON-LD, que é montado a partir delas. "Transportadora com AFE ANVISA" já estava coberta pela seção de credenciais.
+    - **Não coube nesta página:** "frete São Paulo para [estado]". Isso pede páginas de rota (item 34).
 31. **[Alto] Página "Sobre"** com história, fundação, frota (quantidade e tipos) e fotos reais. É o sinal de E-E-A-T (experiência e confiabilidade) que o Google avalia.
 32. **[Médio] Página "Trabalhe conosco"** ([App.jsx:632](src/App.jsx:632)). Uma página própria ranqueia para "vaga motorista carreteiro Mogi das Cruzes", uma busca local com volume.
 33. **[Médio] Blog ou guias:** lotação x fracionada, o que é RCTR-C, RC-DC e RC-V, o que é MOPP, como calcular cubagem, o que é AFE, documentos do frete (CT-e, MDF-e). Atraem buscas informacionais e links.
@@ -157,18 +183,37 @@ Endereço e categoria batem com o Google Meu Negócio: "R. Dr. Laércio da Silva
 
 ### 5. SEO local
 
-36. **[Crítico] Google Business Profile:** categorias "Transportadora" e "Serviço de transporte de cargas", fotos reais, horário, área atendida, publicações e link para o site.
-37. **[Alto] Avaliações no Google:** pedir junto com o comprovante de entrega e responder todas.
-38. **[Alto] Endereço sem CEP** ([App.jsx:576](src/App.jsx:576)). Usar a tag `<address>`, com nome, endereço e telefone (NAP) idênticos aos do Google Business Profile.
+**Conferido em 22/10/2026**, a partir do print do perfil e do registro da Receita.
+
+36. 🟡 **[Crítico] Google Business Profile: existe**, com o nome "Transuniverso Transportadora", a categoria "Trucking company" (empresa de transporte rodoviário), endereço completo, telefone, horário e botão de site. **O que melhorar no painel:**
+    - Acrescentar categorias secundárias, como "Serviço de transporte de cargas" ou "Transportadora".
+    - Preencher o horário de cada dia.
+    - Publicar fotos reais da frota e do pátio. Hoje as fotos são do portão e da fachada.
+    - Definir a área atendida.
+    - Fazer publicações periódicas.
+    - Conferir se o botão "Website" aponta para `https://www.transuniverso.com.br/`.
+37. 🟡 **[Alto] Avaliações no Google:** são só 4, com nota 4,0. Concorrentes locais costumam ter dezenas. Pedir avaliação junto com o comprovante de entrega e responder todas, inclusive as negativas.
+38. **[Alto] Endereço do rodapé incompleto** ([App.jsx](src/App.jsx), `Footer`): mostra "R. Dr. Laércio da Silva, 99 · Mogi das Cruzes/SP", sem bairro (Chácara Cruzeiro do Sul) e sem CEP (08740-650), que constam no Google Meu Negócio e no JSON-LD. Usar a tag `<address>` e o NAP idêntico ao do perfil.
+    - **NAP divergente na Receita:** o CNPJ está cadastrado na R. Santa Perpétua, 295, CEP 08742-110. Sites de consulta de CNPJ, como Econodata, CNPJ.biz e Casa dos Dados, replicam esse endereço. Se a empresa mudou de endereço, atualizar o cadastro na Receita (Redesim/Junta Comercial).
 39. **[Médio] Citações locais** com NAP idêntico: Apontador, TeleListas, Guia Mais, Econodata, Reclame Aqui, Associação Comercial de Mogi das Cruzes, NTC&Logística e SETCESP.
 40. **[Baixo] Mapa incorporado** com carregamento lazy.
 
 ### 6. Performance (Core Web Vitals)
 
-41. **[Alto] LCP de 14 s no celular simulado**, por causa da cortina (itens 3 e 4) e de cerca de 7,8 s de trabalho na thread principal (4,1 s só executando JS).
-42. **[Médio] Cerca de 162 KiB de JS sem uso no carregamento,** segundo o Lighthouse. Vale revisar o que entra no `index` e o que pode esperar.
-43. **[Médio] O chunk `Scene` tem 1 MB** sem compressão. Ele disputa banda e thread principal com o primeiro paint. Vale testar `three` com tree-shaking mais agressivo ou importar só os módulos usados do drei.
-44. Medir de novo no **PageSpeed Insights** contra a URL real da Vercel (com compressão). Meta: LCP abaixo de 2,5 s, CLS abaixo de 0,1 e INP abaixo de 200 ms.
+**Conferido em 22/10/2026**, depois do trabalho de performance feito em outra conversa. O site novo já está no ar.
+
+| Medição (Lighthouse 13.5, celular, 4G simulado) | Perf. | SEO | FCP | LCP | TBT | CLS |
+|---|---|---|---|---|---|---|
+| Site no ar (www, com Brotli), 2 rodadas | 64–68 | 100 | 2,1 s | 2,2–2,3 s | 1.160–1.610 ms | 0,004–0,007 |
+| Build local (`vite preview`, sem compressão), 3 rodadas | 60–79 | 100 | 2,3 s | 2,8–3,0 s | 440–1.630 ms | 0,004–0,007 |
+| Build local, desktop | 96 | – | 0,5 s | 0,6 s | 70 ms | 0,009 |
+
+O PageSpeed Insights ficou sem cota no dia da checagem, então o site no ar foi medido com o Lighthouse local contra a URL de produção.
+
+41. ✅ **[Alto] LCP: 2,2–2,3 s no site no ar**, abaixo da meta de 2,5 s. Era 14 s antes. O LCP continua sendo o texto da cortina, que agora aparece no primeiro paint.
+42. ✅ **CLS:** abaixo de 0,01, bem dentro da meta de 0,1.
+43. 🟡 **[Médio] TBT de 0,4 a 1,6 s no laboratório.** É o 3D renderizado na CPU, porque o Chrome do Lighthouse não tem GPU. Sem o 3D, a nota ficaria perto de 88. Num celular real com GPU, esse custo é bem menor. O dono do site aceitou essa nota, e um fallback estático foi descartado (ver `CLAUDE.md`). O TBT é só um indicador de laboratório para o INP: o que conta no ranking é o INP medido em usuários reais.
+44. 👤 **Dados de campo (CrUX):** o Google só ranqueia por Core Web Vitals medidos em usuários reais do Chrome. Um site com pouco tráfego costuma não ter dados de campo. Acompanhar em Search Console → Core Web Vitals (item 8) e, quando houver tráfego, no [PageSpeed Insights](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fwww.transuniverso.com.br%2F).
 
 ### 7. Links
 
@@ -190,14 +235,49 @@ Endereço e categoria batem com o Google Meu Negócio: "R. Dr. Laércio da Silva
 
 ### 10. IA e buscadores generativos (GEO)
 
-54. **[Alto]** Depende do item 1: sem HTML pronto, as IAs não leem nada.
-55. **[Médio] Liberar no `robots.txt`** `OAI-SearchBot`, `GPTBot`, `PerplexityBot`, `ClaudeBot` e `Google-Extended`, se a empresa quiser aparecer nas respostas de IA.
-56. **[Médio] Frases factuais autocontidas,** como "A Transuniverso é uma transportadora rodoviária de Mogi das Cruzes/SP que faz frete lotação e fracionado para todo o Brasil desde 20XX."
-57. **[Baixo] `llms.txt`.** Há pouca evidência de efeito.
+**Conferido em 22/10/2026 no site no ar.**
+
+54. ✅ **[Alto] HTML pronto:** a página de produção já chega pré-renderizada, com o texto, o H1 com palavra-chave e o JSON-LD (com o CNPJ). Robôs de IA que não executam JS leem tudo.
+55. ✅ **[Médio] `robots.txt` no ar** liberando todos os robôs, inclusive os de busca e de treino de IA, com o sitemap.
+56. 🟡 **[Médio] Frases factuais autocontidas:** a definição completa da empresa está no JSON-LD (`description`), no `llms.txt`, no trecho invisível do H1 e na resposta "Saímos de Mogi das Cruzes, no Alto Tietê (SP)…" do FAQ. **Falta uma frase visível** do tipo "A Transuniverso é uma transportadora rodoviária de Mogi das Cruzes/SP que faz frete lotação e fracionado para todo o Brasil desde 2012." O melhor lugar é uma futura página "Sobre" (item 31) ou o rodapé.
+57. 🟡 **[Baixo] [llms.txt](public/llms.txt) no ar.** Ainda diz "15 anos de operação", o mesmo dado desatualizado do site (a empresa tem 14 anos). Corrigir junto com os números da página quando for decidido entre "14 anos" e "desde 2012".
 
 ### 11. Medição
 
-58. **[Alto] Não existe analytics.** O Search Console (item 8) mostra as buscas e os cliques. O GA4 mostra o que acontece depois: quanto do tráfego é orgânico e quantos visitantes de busca clicam para pedir cotação. Sem isso, não dá para saber quais palavras-chave e páginas geram cotações.
+58. 🟡 **[Alto] GA4 instalado em 22/10/2026** (`G-46WQCRHKHX`, no [index.html](index.html)). Ainda falta o deploy.
+    - Só mede no domínio de produção. Dev e `*.vercel.app` ficam fora dos relatórios.
+    - O `gtag.js` só baixa depois que a página carrega e fica ociosa. Os eventos anteriores ficam na fila e são enviados quando ele chega.
+    - **Eventos** (testados no Chrome com o domínio de produção apontado para o build local e os servidores do Google bloqueados):
+
+      | Ação | Evento | Parâmetros |
+      |---|---|---|
+      | Clique em qualquer botão de WhatsApp de cotação | `generate_lead` | `method: whatsapp`, `cta_location`: header, top, numeros, rota, garantia, faq ou rodape |
+      | Envio do formulário | `generate_lead` | `method: form`, `cta_location: contato`, `freight_type` (Lotação, Fracionada…) |
+      | Clique no telefone ou e-mail do rodapé | `generate_lead` | `method: phone` ou `email` |
+      | "Trabalhe conosco" | `trabalhe_conosco` | separado de propósito, para candidatos não contarem como clientes |
+
+    **Falta você fazer, depois do deploy:**
+    - [ ] GA4 → Relatórios → Tempo real: abrir o site e conferir a visita. Os eventos aparecem em até 1 minuto.
+    - [ ] Administrador → Eventos: marcar `generate_lead` como **evento-chave**. Ele aparece na lista até 24 h depois do primeiro clique.
+    - [ ] Administrador → Definições personalizadas: criar as dimensões `method`, `cta_location` e `freight_type` (escopo: evento), para usar nos relatórios.
+    - [ ] Administrador → Vinculações de produtos → Search Console: vincular a propriedade `transuniverso.com.br`.
+    - [ ] Administrador → Coleta e retenção de dados: subir a retenção para 14 meses (o padrão é 2).
+    - [ ] Para ver o SEO funcionando: Relatórios → Aquisição → Aquisição de tráfego, filtrar "Organic Search" e olhar os eventos-chave.
+    - **Urgente:** o site antigo tinha a tag do Google Ads `AW-17990074896`, com a conversão "Solicitar cotação". O site novo já está no ar sem ela. Se a empresa anuncia, o Google Ads parou de contar conversões e de alimentar o lance automático.
+
+    **Plano**
+
+    | # | Quem | Passo |
+    |---|---|---|
+    | 1 | Você | Criar a propriedade GA4 em analytics.google.com, com a conta Google da empresa: fuso de Brasília, moeda BRL e fluxo de dados "Web" para `https://www.transuniverso.com.br`. Me passar o ID de medição (`G-XXXXXXXXXX`). |
+    | 2 | Você | No Google Ads, em Metas → Conversões → "Solicitar cotação" → Configuração da tag, copiar o rótulo da conversão (o trecho depois de `AW-17990074896/`). |
+    | 3 | Eu | Carregar o `gtag.js` com o GA4 e o Google Ads depois do primeiro paint, para não piorar o LCP. |
+    | 4 | Eu | Disparar um evento `generate_lead` em cada clique de WhatsApp, com a seção de origem (hero, números, serviços, garantia, FAQ, rodapé), e em cada envio do formulário. Disparar também cliques em telefone e e-mail. |
+    | 5 | Eu | Enviar a mesma ação como conversão do Google Ads. |
+    | 6 | Você | No GA4, marcar `generate_lead` como evento-chave e vincular o Search Console (Administrador → Vinculações de produtos) e o Google Ads. |
+    | 7 | Você | Ver o resultado em Relatórios → Aquisição → Aquisição de tráfego, filtrando "Organic Search" e o evento `generate_lead`. |
+
+    **LGPD:** o GA4 usa cookies. O mínimo é citar o GA4 numa política de privacidade. O ideal é o Consent Mode v2 com um aviso de cookies, que mantém medição anônima para quem recusar.
 
 ---
 

@@ -512,6 +512,7 @@ function Quote() {
       f.carga && `Carga: ${f.carga}`,
     ].filter(Boolean).join('\n')
     window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener')
+    gtag('event', 'generate_lead', { method: 'form', cta_location: 'contato', freight_type: f.tipo }) // gtag: index.html
     setSent(true)
   }
   return (
