@@ -623,11 +623,13 @@ function Footer() {
   )
 }
 
-// client logos traced to SVG: CBFA and ANX from high-res files, the rest from transuniverso.com.br's 120×40 px PNGs.
+// client logos traced to SVG: CBFA and ANX from high-res files, Canedopel/MD/Íris/Antares from the commercial deck's
+// vector paths, the rest from transuniverso.com.br's 120×40 px PNGs. Same set and order as the deck's partners slide.
 // ponytail: swap for the companies' official SVGs when available
 const partners = [
   ['amsted-rail', 'Amsted Rail'], ['anx', 'ANX'], ['cbfa', 'CBFA'], ['embalagens-santa-ines', 'Embalagens Santa Inês'],
-  ['jsl', 'JSL'], ['novakraft', 'Novakraft'], ['placo', 'Placo Saint-Gobain'], ['recriar', 'Recriar'],
+  ['novakraft', 'Novakraft'], ['recriar', 'Recriar'], ['canedopel', 'Canedopel Papéis'],
+  ['md', 'MD Inox e Serviços Industriais'], ['iris', 'Íris Papéis e Embalagens'], ['antares', 'Antares Embalagens'],
 ]
 
 function Partners() {
@@ -636,7 +638,7 @@ function Partners() {
       <p className="font-mono text-xs tracking-[0.14em] text-muted uppercase">Parceiros</p>
       <h2 className="mt-5 max-w-[18ch] font-display text-[2.2rem] leading-[0.95] font-bold tracking-[-0.035em] uppercase sm:text-5xl lg:text-[clamp(3rem,4.6vw,5.5rem)]"><span className="text-muted">Alguns dos nossos</span><br />parceiros comerciais.</h2>
       <div className="mt-12 md:mt-16">
-        <SealGrid label="Nossos parceiros" meta={<><span className="md:hidden">Marcas que confiam</span><span className="hidden md:inline">Empresas que confiam em nós</span></>} cols="grid-cols-2 md:grid-cols-4" head="md:grid-cols-4" span="md:col-span-3">
+        <SealGrid label="Nossos parceiros" meta={<><span className="md:hidden">Marcas que confiam</span><span className="hidden md:inline">Empresas que confiam em nós</span></>} cols="grid-cols-2 lg:grid-cols-5" head="lg:grid-cols-5" span="lg:col-span-4">
           {partners.map(([file, name]) => (
             <li key={file} className="contents"><Cell className="group grid aspect-[3/2] place-items-center p-6">
               <img src={`/images/clientes/${file}.svg`} alt={name} width={120} height={40} loading="lazy" className="h-auto w-[min(120px,75%)] transition-transform group-hover:scale-110 md:w-[min(180px,60%)]" />
