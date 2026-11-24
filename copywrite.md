@@ -31,7 +31,7 @@ Objetivo: apresentar a empresa **e** levar o visitante a pedir uma cotação.
 | Entrega | Confirmada com comprovante assinado |
 | Contato | atendimento@transuniverso.com.br · (11) 94013-4501 (telefone/WhatsApp) |
 | Endereço | R. Dr. Laércio da Silva, 99, Mogi das Cruzes/SP |
-| Instagram | @transuniverso.t |
+| Instagram | @transuniverso.transportadora (https://www.instagram.com/transuniverso.transportadora/) |
 | Razão social | TRANSUNIVERSO TRANSPORTADORA LTDA |
 
 ---
@@ -43,6 +43,7 @@ Objetivo: apresentar a empresa **e** levar o visitante a pedir uma cotação.
 - Subtítulo do hero "Carga completa, fracionada, expressa e internacional…".
 - "Levamos sua carga a **qualquer órbita**": a frase promete demais.
 - Qualquer menção a "histórico completo" ou rastreio pelo cliente, porque soa como um portal que não existe.
+- **"Logística" para descrever a empresa** (operador logístico, soluções logísticas, #logistica): a Transuniverso é transportadora rodoviária, não faz logística (armazenagem, gestão de estoque, distribuição). Use "transporte de cargas", "frete" ou "transportadora". "Logística" só pode aparecer como o setor do cliente (ex.: "compras, logística").
 - Bug técnico do site oficial: os contadores aparecem como **"+0"** quando a animação não roda (sem JS ou para o Google). O número final precisa estar no HTML.
 
 ---
@@ -200,7 +201,7 @@ Botão: `Receber cotação em 15 min`
 
 TRANSUNIVERSO TRANSPORTADORA LTDA · 15 anos de mercado
 R. Dr. Laércio da Silva, 99, Mogi das Cruzes/SP · Atendimento em todo o Brasil
-atendimento@transuniverso.com.br · (11) 94013-4501 · @transuniverso.t
+atendimento@transuniverso.com.br · (11) 94013-4501 · @transuniverso.transportadora
 CTA final: `Cotar meu frete em 15 min →`
 
 ---
@@ -212,6 +213,7 @@ CTA final: `Cotar meu frete em 15 min →`
 - **Rótulos das seções** no estilo "controle de missão":
   `(01) O problema` · `(02) Serviços` · `(03) A missão` · `(04) Garantia` · `(05) Credenciais` · `(06) Clientes` · `(07) Dúvidas` · `(08) Cotação`
 - **Palavra principal da Fracionada:** "economia".
+- **Instagram:** no máximo **5 hashtags** por post (limite do Instagram). Coloque as mais importantes primeiro.
 
 ---
 
